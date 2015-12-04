@@ -4,7 +4,7 @@ import time
 
 def process(string, name):
     my_corpus = Corpus(path=string, name=name)
-
+    print(name + " : ")
     # much time
     my_corpus.evaluate_corpus_documents()
     print("Corpus document evaluated")

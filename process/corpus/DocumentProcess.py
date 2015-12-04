@@ -3,7 +3,7 @@ from nltk.tokenize import PunktSentenceTokenizer
 from collections import Counter
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import PorterStemmer
-from process.parser.ParserProcess import parse
+from process.parser.ParserProcess import Parse
 
 
 class Document(object):
@@ -66,7 +66,7 @@ class Document(object):
     #     """
     #     All approach of extracting features from raw data implemented here
     #     """
-    #     self.document_parser = parse(self.file_path)
+    #     self.document_parser = Parse(self.file_path)
     #     feature_dictionary = Counter(self.document_parser.run())
     #     return feature_dictionary
 
@@ -78,7 +78,7 @@ class Document(object):
         """
         print(self.file_name)
         evaluated_document_name = self.evaluation_file_directory + self.file_name + ".txt"
-        feature_dictionary = Counter(parse(self.file_path).run)
+        feature_dictionary = Counter(Parse(self.file_path).run)
 
         with open(evaluated_document_name, 'w', encoding='utf-8') as document:
             for key in feature_dictionary:

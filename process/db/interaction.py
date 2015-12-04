@@ -39,6 +39,7 @@ class Interaction:
         """
         this_corpus_id = self.get_corpus_id
         for key in my_dictionary:
+
             term_frequency = my_dictionary[key]
             term_object = self.get_or_create(Term, term_name=key)
             document_object = self.get(Document, document_name=eval_document_name)

@@ -62,9 +62,18 @@ class Corpus(object):
         returns the collection of term and term frequency
         as a dictionary in the format -> { term : term_frequency }
         """
+
         with open(eval_document_name, 'r') as document:
             lines = [line.rstrip().split(':') for line in document]
-            my_dictionary = {line[0]: int(line[1]) for line in lines}
+            my_dictionary = {}
+            for line in lines:
+                word = line[0]
+                try:
+                    count = int(line[1])
+                    my_dictionary[word] = count
+                except Exception as E:
+                    print(eval_document_name + " : " + str(E))
+                    continue
         return my_dictionary
 
     def upload_term_frequency(self):
@@ -105,8 +114,8 @@ class Corpus(object):
         tf *= 1.0
         df *= 1.0
         if tf > 0:
-            weight = (1 + log10(tf)) * log10(self.corpus_evaluated_document_count / df)
-            # weight = (1 + log10(tf))
+            # weight = (1 + log10(tf)) * log10(self.corpus_evaluated_document_count / df)
+            weight = (1 + log10(tf))
         return weight
 
     def evaluate_terms_weight(self):
