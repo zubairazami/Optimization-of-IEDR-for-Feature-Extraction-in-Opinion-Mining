@@ -4,7 +4,6 @@ from sqlalchemy import func
 
 
 class Interaction:
-
     def __init__(self, corpus_name):
         self.corpus_name = corpus_name
         self.db_engine = engine
@@ -39,7 +38,6 @@ class Interaction:
         """
         this_corpus_id = self.get_corpus_id
         for key in my_dictionary:
-
             term_frequency = my_dictionary[key]
             term_object = self.get_or_create(Term, term_name=key)
             document_object = self.get(Document, document_name=eval_document_name)
@@ -53,9 +51,12 @@ class Interaction:
         this method inserts document frequency for all the terms in a specific corpus in term_corpus table
         """
         term_list = self.get_corpus_term_id_list
+        document_list = self.get_corpus_document_id_list
         this_corpus_id = self.get_corpus_id
         for each_term_id in term_list:
-            document_frequency = self.session.query(TermDocument).filter(TermDocument.term_id == each_term_id).count()
+            document_frequency = self.session.query(TermDocument).filter(TermDocument.term_id == each_term_id,
+                                                                         TermDocument.document_id.in_(
+                                                                             document_list)).count()
             term_corpus_object = self.get(TermCorpus, term_id=each_term_id, corpus_id=this_corpus_id)
             if term_corpus_object is not None:
                 term_corpus_object.document_frequency = document_frequency
