@@ -1,6 +1,7 @@
 from process.db.structure import engine, Base, Corpus, Document, Term, TermDocument, TermCorpus
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
+from math import floor
 
 
 class Interaction:
@@ -283,3 +284,130 @@ class Interaction:
         """
         instance = model(**kwargs)
         self.session.add(instance)
+
+
+class PerformanceInteraction:
+    def __init__(self, dependent_corpus_name, independent_corpus_name):
+        self.db_engine = engine
+        self.Base = Base
+        self.Base.metadata.bind = self.db_engine
+        self.DBSession = sessionmaker(bind=self.db_engine)
+        self.session = self.DBSession()
+        self.dependent_corpus_name = dependent_corpus_name
+        self.independent_corpus_name = independent_corpus_name
+        self.dependant_corpus_id = self.session.query(Corpus.corpus_id).filter(
+            Corpus.corpus_name == self.dependent_corpus_name).first()[0]
+        self.independent_corpus_id = self.session.query(Corpus.corpus_id).filter(
+            Corpus.corpus_name == self.independent_corpus_name).first()[0]
+
+    def get_all_domain_relevance(self, dependent=True):
+        """
+        returns domain relevance of all features of either dependent or independent corpus
+        as a list, based on the value of input parameter 'dependent'.
+        """
+        if dependent:
+            corpus_id = self.dependant_corpus_id
+        else:
+            corpus_id = self.independent_corpus_id
+        temp_list = self.session.query(TermCorpus.domain_relevance).filter(TermCorpus.corpus_id == corpus_id).all()
+        temp_list = [round(each_tuple[0], 3) for each_tuple in temp_list]
+        relevance_list = list(set(temp_list))
+        print(len(relevance_list))
+        return relevance_list
+
+    def get_max_dr(self, dependent=True):
+        """
+        returns the highest value from domain relevance among all features of either dependent
+        or independent corpus, based on the value of input parameter 'dependent'.
+        """
+        if dependent:
+            corpus_id = self.dependant_corpus_id
+        else:
+            corpus_id = self.independent_corpus_id
+        return self.session.query(func.max(TermCorpus.domain_relevance).label("max")).filter(
+            TermCorpus.corpus_id == corpus_id).one().max
+
+    def get_min_dr(self, dependent=True):
+        """
+        returns the lowest value of domain relevance among all features of either dependent
+        or independent corpus, based on the value of input parameter 'dependent'.
+        """
+        if dependent:
+            corpus_id = self.dependant_corpus_id
+        else:
+            corpus_id = self.independent_corpus_id
+        return self.session.query(func.min(TermCorpus.domain_relevance).label("min")).filter(
+            TermCorpus.corpus_id == corpus_id).one().min
+
+    def get_count(self, dependent=True):
+        """
+        returns the count of candidate features of either dependent
+        or independent corpus, based on the value of input parameter 'dependent'.
+        """
+        if dependent:
+            corpus_id = self.dependant_corpus_id
+        else:
+            corpus_id = self.independent_corpus_id
+        return self.session.query(TermCorpus.term_id).filter(TermCorpus.corpus_id == corpus_id).count()
+
+    def get_median_threshold(self, dependent=True):
+        """
+        returns a threshold (median, measurement of central tendency) domain relevance value
+        of either dependent or independent corpus,  based on the value of input parameter 'dependent'.
+        """
+        if dependent:
+            corpus_id = self.dependant_corpus_id
+        else:
+            corpus_id = self.independent_corpus_id
+
+        temp_list = self.session.query(TermCorpus.domain_relevance).filter(TermCorpus.corpus_id == corpus_id).all()
+        relevance_list = [each_tuple[0] for each_tuple in temp_list]
+        count = self.get_count(dependent=dependent)
+
+        if not count % 2 == 0:
+            threshold = relevance_list[floor(count / 2)]
+        else:
+            i = int(count / 2)
+            threshold = (relevance_list[i] + relevance_list[i - 1]) / 2
+        return threshold
+
+    @property
+    def get_domain_relevance_dictionary(self):
+        """
+        returns one list, two dictionaries:
+            1. candidate_feature_id_list : Contains ids of all the candidate features ( of dependent corpus )
+            2. idr_score_dictionary : Contains id (of candidate features) as key and their intrinsic domain
+        relevance as value.
+            3. edr_score_dictionary : Contains id (of candidate features) as key and their extrinsic domain
+        relevance as value.
+        """
+        temp_list = self.session.query(TermCorpus.term_id, TermCorpus.domain_relevance).filter(
+            TermCorpus.corpus_id == self.dependant_corpus_id).all()
+
+        candidate_feature_id_list = [each_tuple[0] for each_tuple in temp_list]
+        idr_score_dictionary = {each_tuple[0]: each_tuple[1] for each_tuple in temp_list}
+
+        temp_list = self.session.query(TermCorpus.term_id, TermCorpus.domain_relevance).filter(
+            TermCorpus.corpus_id == self.independent_corpus_id,
+            TermCorpus.term_id.in_(candidate_feature_id_list)).all()
+
+        edr_score_dictionary = {each_tuple[0]: each_tuple[1] for each_tuple in temp_list}
+        return candidate_feature_id_list, idr_score_dictionary, edr_score_dictionary
+
+    def get_final_features(self, idr_threshold, edr_threshold):
+        """
+        returns all the resultant features of this IEDR method for feature extraction as a list,
+        based on two input parameter idr_threshold, edr_threshold
+        """
+        candidate_feature_id_list, idr_dictionary, edr_dictionary = self.get_domain_relevance_dictionary
+        for feature_id in candidate_feature_id_list:
+            if not feature_id in edr_dictionary:
+                edr_dictionary[feature_id] = float(0)
+
+        feature_id_list = [feature_id for feature_id in candidate_feature_id_list if
+                           idr_dictionary[feature_id] >= idr_threshold and edr_dictionary[feature_id] <= edr_threshold]
+        if len(feature_id_list) > 0:
+            temp_list = self.session.query(Term.term_name).filter(Term.term_id.in_(feature_id_list)).all()
+            final_features = [each_tuple[0] for each_tuple in temp_list]
+            return final_features
+        return []

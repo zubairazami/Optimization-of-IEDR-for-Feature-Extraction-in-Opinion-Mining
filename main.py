@@ -6,7 +6,7 @@ from process.manage import ProcessManager, recreate_database
 def run_process():
     start_time = time.time()
 
-    # be scared be very very scared about this method, completely clean the database
+    # be scared be very very scared about this method, completely cleans the database
     recreate_database()
 
     process_1 = ProcessManager(corpus_path="/home/badhon/Desktop/dataset/cars/", corpus_name='cars')
