@@ -1,51 +1,36 @@
-from process.corpus.CorpusProcess import Corpus
-from process.db.structure import clean_up
 import time
+import sys
+from process.manage import ProcessManager, recreate_database
 
-def process(string, name):
-    my_corpus = Corpus(path=string, name=name)
-    print(name + " : ")
-    # much time
-    my_corpus.evaluate_corpus_documents()
-    print("Corpus document evaluated")
 
-    my_corpus.upload_documents()
-    print("Document List Uploaded.")
+def run_process():
+    start_time = time.time()
 
-    # much time
-    my_corpus.upload_term_frequency()
-    print("Term Frequency uploaded.")
+    # be scared be very very scared about this method, completely clean the database
+    recreate_database()
 
-    my_corpus.upload_document_frequency()
-    print("Document Frequency uploaded.")
+    process_1 = ProcessManager(corpus_path="/home/badhon/Desktop/dataset/cars/", corpus_name='cars')
+    process_1.extract_candidate_features()
+    process_1.calculate_domain_relevance()
 
-    # moderate time
-    my_corpus.evaluate_terms_weight()
-    print("Wij uploaded")
+    process_2 = ProcessManager(corpus_path="/home/badhon/Desktop/dataset/hotels/", corpus_name='hotels')
+    process_2.extract_candidate_features()
+    process_2.calculate_domain_relevance()
 
-    my_corpus.evaluate_wi()
-    print("Wi")
+    second = time.time() - start_time
+    print(int(second / 3600), "hour(s)", int((second % 3600) / 60), "minute(s)", round((second % 3600) % 60, 5),
+          "second(s)")
 
-    my_corpus.evaluate_si()
-    print("Si")
 
-    my_corpus.evaluate_dispi()
-    print("DISPERSIONi")
+def evaluate_performance():
+    pass
 
-    my_corpus.evaluate_wj()
-    print("Wj")
 
-    # moderate time
-    my_corpus.evaluate_devij()
-    print("DEVIATIONij")
+def main():
+    # run_process()
+    # evaluate_performance()
+    pass
 
-    my_corpus.evaluate_domain_relevance()
-    print("DRi")
 
-# start_time = time.time()
-# be scared, be very very scared of the following method clean_up()
-# clean_up()
-# process("/home/badhon/Desktop/dataset/cars/",name='cars')
-# process("/home/badhon/Desktop/dataset/hotels/",name = 'hotels')
-# second = time.time() - start_time
-# print(int(second/3600), "hour(s)", int((second%3600)/60), "minute(s)", round((second%3600)%60, 5), "second(s)")
+if __name__ == "__main__":
+    sys.exit(main())
