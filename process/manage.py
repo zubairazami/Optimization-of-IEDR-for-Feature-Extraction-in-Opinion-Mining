@@ -1,5 +1,6 @@
 from process.corpus.CorpusProcess import Corpus
 from process.db.structure import clean_up
+from process.db.interaction import PerformanceInteraction
 
 
 class ProcessManager:
@@ -46,6 +47,28 @@ class ProcessManager:
 
         self.corpus.evaluate_domain_relevance()
         print(self.name + " : DRi")
+
+
+class FeatureExtractor:
+    def __init__(self, dependent_corpus, independent_corpus):
+        self.dependent_corpus = dependent_corpus
+        self.independent_corpus = independent_corpus
+        self.pi_object = PerformanceInteraction(dependent_corpus_name=self.dependent_corpus,
+                                                independent_corpus_name=self.independent_corpus)
+
+    def _calculate_threshold_from_percentage(self, percentage, dependant=True):
+        if percentage is None:
+            return self.pi_object.get_median_threshold(dependent=dependant)
+        dr_max = self.pi_object.get_max_dr(dependent=dependant)
+        dr_min = self.pi_object.get_min_dr(dependent=dependant)
+        dr_threshold = (((dr_max - dr_min) / 100) * percentage) + dr_min
+        return dr_threshold
+
+    def extract(self, idr_percentage=None, edr_percentage=None):
+        idr_threshold = self._calculate_threshold_from_percentage(percentage=idr_percentage)
+        edr_threshold = self._calculate_threshold_from_percentage(percentage=edr_percentage, dependant=False)
+        print(idr_threshold, edr_threshold)
+        return self.pi_object.get_final_features(idr_threshold=idr_threshold, edr_threshold=edr_threshold)
 
 
 def recreate_database():

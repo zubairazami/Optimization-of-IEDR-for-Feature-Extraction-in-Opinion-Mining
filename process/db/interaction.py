@@ -401,7 +401,7 @@ class PerformanceInteraction:
         """
         candidate_feature_id_list, idr_dictionary, edr_dictionary = self.get_domain_relevance_dictionary
         for feature_id in candidate_feature_id_list:
-            if not feature_id in edr_dictionary:
+            if feature_id not in edr_dictionary:
                 edr_dictionary[feature_id] = float(0)
 
         feature_id_list = [feature_id for feature_id in candidate_feature_id_list if
