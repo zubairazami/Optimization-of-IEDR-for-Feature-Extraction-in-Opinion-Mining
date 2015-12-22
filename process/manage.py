@@ -14,7 +14,7 @@ class ProcessManager:
         self.corpus.evaluate_corpus_documents()
         print(self.name + " : Candidate feature extracted")
 
-    def calculate_domain_relevance(self):
+    def calculate_domain_relevance(self, modified_weight_equation):
         self.corpus.upload_documents()
         print(self.name + " : Document List Uploaded.")
 
@@ -26,7 +26,7 @@ class ProcessManager:
         print(self.name + " : Document Frequency uploaded.")
 
         # moderate time
-        self.corpus.evaluate_terms_weight()
+        self.corpus.evaluate_terms_weight(modified_weight_equation=modified_weight_equation)
         print(self.name + " : Wij uploaded")
 
         self.corpus.evaluate_wi()

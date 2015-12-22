@@ -48,7 +48,6 @@ class Corpus(object):
         """
         document_list = []
         for document_name in self.corpus_evaluated_document_list:
-
             # getting only the name of the file rather than whole directory
             position = document_name.rfind('/') + 1
             document_name = document_name[position:]
@@ -106,7 +105,7 @@ class Corpus(object):
         """
         self.interaction.insert_document_frequency()
 
-    def calculate_weight(self, tf, df):
+    def calculate_weight(self, tf, df, modified_weight_equation):
         """
         calculates the weight for each term with term & document frequency
         """
@@ -114,11 +113,14 @@ class Corpus(object):
         tf *= 1.0
         df *= 1.0
         if tf > 0:
-            # weight = (1 + log10(tf)) * log10(self.corpus_evaluated_document_count / df)
-            weight = (1 + log10(tf))
+            if modified_weight_equation:
+                weight = (1 + log10(tf))
+            else:
+                weight = (1 + log10(tf)) * log10(self.corpus_evaluated_document_count / df)
+
         return weight
 
-    def evaluate_terms_weight(self):
+    def evaluate_terms_weight(self, modified_weight_equation):
         """
         process & invoke the upload of weight of each term with respect to each document
         """
@@ -136,7 +138,8 @@ class Corpus(object):
             tf_dictionary = tf_huge[doc_id]
             weightij_dictionary = {}
             for term_id in tf_dictionary:
-                weightij = self.calculate_weight(tf_dictionary[term_id], df_dictionary[term_id])
+                weightij = self.calculate_weight(tf_dictionary[term_id], df_dictionary[term_id],
+                                                 modified_weight_equation=modified_weight_equation)
                 weightij_dictionary[term_id] = weightij
             huge_dictionary[doc_id] = weightij_dictionary
 
@@ -182,7 +185,7 @@ class Corpus(object):
                     sum += wi * wi
             # as per equation
             si_value = sqrt(sum / N)
-            if si_value==0:
+            if si_value == 0:
                 si_value = .000001
             si_dictionary[term_id] = si_value
 
