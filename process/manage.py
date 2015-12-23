@@ -67,7 +67,6 @@ class FeatureExtractor:
     def extract(self, idr_percentage=None, edr_percentage=None):
         idr_threshold = self._calculate_threshold_from_percentage(percentage=idr_percentage)
         edr_threshold = self._calculate_threshold_from_percentage(percentage=edr_percentage, dependant=False)
-        print(idr_threshold, edr_threshold)
         return self.pi_object.get_final_features(idr_threshold=idr_threshold, edr_threshold=edr_threshold)
 
 

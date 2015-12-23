@@ -70,8 +70,7 @@ class Corpus(object):
                 try:
                     count = int(line[1])
                     my_dictionary[word] = count
-                except Exception as E:
-                    print(eval_document_name + " : " + str(E))
+                except Exception as e:
                     continue
         return my_dictionary
 
