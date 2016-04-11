@@ -25,10 +25,10 @@ class Document(object):
         """
         creates a new file with respect to each raw file in the dataset with 'term_name : term frequency'
         """
-        print(self.file_name)
         evaluated_document_name = self.evaluation_file_directory + self.file_name + ".txt"
         feature_dictionary = Counter(Parse(self.file_path).run)
 
         with open(evaluated_document_name, 'w', encoding='utf-8') as document:
             for key in feature_dictionary:
                 document.write(str(key) + ":" + str(feature_dictionary[key]) + "\n")
+        return self.file_name

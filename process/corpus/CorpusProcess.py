@@ -2,6 +2,7 @@ from glob import glob
 from process.corpus.DocumentProcess import Document
 from math import log10, sqrt
 from process.db.interaction import Interaction
+from PyQt4 import QtCore
 
 
 class Corpus(object):
@@ -28,16 +29,20 @@ class Corpus(object):
         self.corpus_evaluated_document_list = glob(self.corpus_path + "eval/*")
         self.corpus_evaluated_document_count = len(self.corpus_evaluated_document_list)
 
-    def evaluate_corpus_documents(self):
+    def evaluate_corpus_documents(self, signal_emitter):
         """
         this method extracts candidate features for all the documents in the corpus
         creates a corresponding file for all the document with extracted features and terms
         """
         counter = 0
+        total_files = len(self.corpus_raw_document_list)
+        signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "Candidate Feature extracted from : ")
         for document_path in self.corpus_raw_document_list:
-            Document(document_path).evaluate_term_frequency()
+            file_name = Document(document_path).evaluate_term_frequency()
+            signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "\t"+file_name)
             counter += 1
             print(counter, end='\r')
+            signal_emitter.emit(QtCore.SIGNAL("update_cfe_progressbar"), counter, total_files)
         self._refresh()
         print(counter)
 

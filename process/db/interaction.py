@@ -40,11 +40,16 @@ class Interaction:
         this_corpus_id = self.get_corpus_id
         for key in my_dictionary:
             term_frequency = my_dictionary[key]
-            term_object = self.get_or_create(Term, term_name=key)
-            document_object = self.get(Document, document_name=eval_document_name)
-            self.get_or_create(TermDocument, term_id=term_object.term_id,
-                               document_id=document_object.document_id, term_frequency=term_frequency)
-            self.get_or_create(TermCorpus, term_id=term_object.term_id, corpus_id=this_corpus_id)
+            if any(c.isalpha() for c in key):
+                try:
+                    term_object = self.get_or_create(Term, term_name=key)
+                    document_object = self.get(Document, document_name=eval_document_name)
+                    self.get_or_create(TermDocument, term_id=term_object.term_id,
+                                       document_id=document_object.document_id, term_frequency=term_frequency)
+                    self.get_or_create(TermCorpus, term_id=term_object.term_id, corpus_id=this_corpus_id)
+                except UnicodeEncodeError:
+                    continue
+
         self.session.commit()
 
     def insert_document_frequency(self):
@@ -300,7 +305,7 @@ class PerformanceInteraction:
         self.independent_corpus_id = self.session.query(Corpus.corpus_id).filter(
             Corpus.corpus_name == self.independent_corpus_name).first()[0]
 
-    def get_all_domain_relevance(self, dependent=True):
+    def get_all_domain_relevance(self, dependent=True, rounded_up_to=3):
         """
         returns domain relevance of all features of either dependent or independent corpus
         as a list, based on the value of input parameter 'dependent'.
@@ -310,9 +315,8 @@ class PerformanceInteraction:
         else:
             corpus_id = self.independent_corpus_id
         temp_list = self.session.query(TermCorpus.domain_relevance).filter(TermCorpus.corpus_id == corpus_id).all()
-        temp_list = [round(each_tuple[0], 3) for each_tuple in temp_list]
+        temp_list = [round(each_tuple[0], rounded_up_to) for each_tuple in temp_list]
         relevance_list = list(set(temp_list))
-        print(len(relevance_list))
         return relevance_list
 
     def get_max_dr(self, dependent=True):
