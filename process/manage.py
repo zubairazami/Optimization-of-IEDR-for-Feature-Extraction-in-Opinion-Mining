@@ -1,3 +1,4 @@
+from os.path import expanduser
 from process.corpus.CorpusProcess import Corpus
 from process.db.structure import clean_up
 from process.db.interaction import PerformanceInteraction
@@ -129,8 +130,11 @@ class FeatureExtractor:
             idr_threshold = idr if idr is not None else self._calculate_threshold()
             edr_threshold = edr if edr is not None else self._calculate_threshold(dependant=False)
 
-        return self.pi_object.get_final_features(idr_threshold=idr_threshold, edr_threshold=edr_threshold)
-
+        feature_list = self.pi_object.get_final_features(idr_threshold=idr_threshold, edr_threshold=edr_threshold)
+        with open(expanduser('~') + "/dataset/actual_corpus_features.txt", 'w', encoding='utf-8') as document:
+            for feature in feature_list:
+                document.write(str(feature) + "\n")
+        return feature_list
 
 def recreate_database():
     clean_up()

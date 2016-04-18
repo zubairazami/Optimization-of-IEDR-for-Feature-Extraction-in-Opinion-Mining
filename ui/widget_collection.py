@@ -3,7 +3,6 @@ from os.path import expanduser
 from interaction.thread_collection import CandidateFeatureExtractionThread, DomainRelevanceCalculationThread, \
     ActualFeatureExtractionThread
 from process.manage import recreate_database, FeatureExtractor
-from math import ceil
 
 
 class ModifiedComboBox(QtGui.QComboBox):

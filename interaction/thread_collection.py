@@ -1,4 +1,5 @@
 from process.manage import ProcessManager, FeatureExtractor
+from sentiment_analysis.manage import SentimentManager
 from PyQt4 import QtCore
 
 
@@ -45,7 +46,7 @@ class DomainRelevanceCalculationThread(QtCore.QThread):
 
 
 class ActualFeatureExtractionThread(QtCore.QThread):
-    def __init__(self, interaction_data, idr=None,edr=None, use_percentage=False):
+    def __init__(self, interaction_data, idr=None, edr=None, use_percentage=False):
         QtCore.QThread.__init__(self)
         self.interaction_data = interaction_data
         self.feature_extractor = None
@@ -59,5 +60,43 @@ class ActualFeatureExtractionThread(QtCore.QThread):
         self.feature_extractor = FeatureExtractor(
             dependent_corpus=self.interaction_data.corpus_dictionary['dependent_corpus_name'],
             independent_corpus=self.interaction_data.corpus_dictionary['independent_corpus_name'])
-        feature_list = self.feature_extractor.extract(use_percentage=self.use_percentage, idr=self.idr, edr = self.edr)
+        feature_list = self.feature_extractor.extract(use_percentage=self.use_percentage, idr=self.idr, edr=self.edr)
         self.emit(QtCore.SIGNAL("afe"), feature_list)
+
+
+class TrainingThread(QtCore.QThread):
+    def __init__(self, interaction_data):
+        QtCore.QThread.__init__(self)
+        self.interaction_data = interaction_data
+        self.sentiment_manager = None
+
+    def run(self):
+        if self.sentiment_manager:
+            self.sentiment_manager = None
+        self.sentiment_manager = SentimentManager(
+            positive_file_directory=self.interaction_data.sentiment_dictionary['pos_filepath'],
+            negative_file_directory=self.interaction_data.sentiment_dictionary['neg_filepath'],
+            pickled_directory=self.interaction_data.sentiment_dictionary['pickled_path'],
+            emitter=self)
+        self.sentiment_manager.train()
+
+
+class AnalysisThread(QtCore.QThread):
+    def __init__(self, interaction_data, test_file, feature_file):
+        QtCore.QThread.__init__(self)
+        self.interaction_data = interaction_data
+        self.sentiment_manager = None
+        self.test_file = test_file
+        self.feature_file = feature_file
+
+    def run(self):
+        if self.sentiment_manager:
+            self.sentiment_manager = None
+        self.sentiment_manager = SentimentManager(
+            positive_file_directory=self.interaction_data.sentiment_dictionary['pos_filepath'],
+            negative_file_directory=self.interaction_data.sentiment_dictionary['neg_filepath'],
+            pickled_directory=self.interaction_data.sentiment_dictionary['pickled_path'],
+            emitter=self)
+        self.sentiment_manager.result(test_file_path=self.test_file, corpus_feature_file_path=self.feature_file)
+
+
