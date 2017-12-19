@@ -1,14 +1,33 @@
 from process.manage import ProcessManager, FeatureExtractor
 from sentiment_analysis.manage import SentimentManager
-from PyQt5 import QtCore
+from PyQt5.QtCore import QThread, pyqtSignal
 
 
-class CandidateFeatureExtractionThread(QtCore.QThread):
+class CandidateFeatureExtractionThread(QThread):
+
+    update_text_browser_signal = pyqtSignal( str )
+    update_progressbar_signal = pyqtSignal( int, int )
+    completion_signal = pyqtSignal()
+
     def __init__(self, interaction_data, dependant=True):
-        QtCore.QThread.__init__(self)
+        super(CandidateFeatureExtractionThread, self).__init__(None)
         self.dependent = dependant
         self.interaction_data = interaction_data
         self.process_manager = None
+
+    def connect_all(self, on_text_update, on_progressbar_update, on_completion):
+        self.update_text_browser_signal.connect(on_text_update)
+        self.update_progressbar_signal.connect(on_progressbar_update)
+        self.completion_signal.connect(on_completion)
+
+    def emit_signal(self, text=None, completed_task_count = None, total_task_count = None):
+
+        if text is None and completed_task_count is None and total_task_count is None:
+            self.completion_signal.emit()
+        elif text is not None:
+            self.update_text_browser_signal.emit(text)
+        else:
+            self.update_progressbar_signal.emit(completed_task_count, total_task_count)
 
     def run(self):
         if self.process_manager:
@@ -23,13 +42,36 @@ class CandidateFeatureExtractionThread(QtCore.QThread):
         self.process_manager.extract_candidate_features(signal_emitter=self)
 
 
-class DomainRelevanceCalculationThread(QtCore.QThread):
+class DomainRelevanceCalculationThread(QThread):
+
     def __init__(self, interaction_data, dependant=True, use_modified_iedr=True):
-        QtCore.QThread.__init__(self)
+        QThread.__init__(self)
         self.dependent = dependant
         self.interaction_data = interaction_data
         self.use_modified_iedr = use_modified_iedr
         self.process_manager = None
+
+        self.update_text_browser_signal = pyqtSignal(str)
+        self.update_progressbar_signal = pyqtSignal(int, int)
+        self.completion_signal = pyqtSignal()
+
+        self.update_text_browser_signal = pyqtSignal(str)
+        self.update_progressbar_signal = pyqtSignal(int, int)
+        self.completion_signal = pyqtSignal()
+
+    def connect_all(self, on_text_update, on_progressbar_update, on_completion):
+        self.update_text_browser_signal.connect(on_text_update)
+        self.update_progressbar_signal.connect(on_progressbar_update)
+        self.completion_signal.connect(on_completion)
+
+    def emit_signal(self, text=None, completed_task_count=None, total_task_count=None):
+
+        if text is None and completed_task_count is None and total_task_count is None:
+            self.completion_signal.emit()
+        elif text is not None:
+            self.update_text_browser_signal.emit(text)
+        else:
+            self.update_progressbar_signal.emit(completed_task_count, total_task_count)
 
     def run(self):
         if self.process_manager:
@@ -45,9 +87,9 @@ class DomainRelevanceCalculationThread(QtCore.QThread):
                                                         modified_weight_equation=self.use_modified_iedr)
 
 
-class ActualFeatureExtractionThread(QtCore.QThread):
+class ActualFeatureExtractionThread(QThread):
     def __init__(self, interaction_data, idr=None, edr=None, use_percentage=False):
-        QtCore.QThread.__init__(self)
+        QThread.__init__(self)
         self.interaction_data = interaction_data
         self.feature_extractor = None
         self.use_percentage = use_percentage
@@ -64,9 +106,9 @@ class ActualFeatureExtractionThread(QtCore.QThread):
         self.emit(QtCore.SIGNAL("afe"), feature_list)
 
 
-class TrainingThread(QtCore.QThread):
+class TrainingThread(QThread):
     def __init__(self, interaction_data):
-        QtCore.QThread.__init__(self)
+        QThread.__init__(self)
         self.interaction_data = interaction_data
         self.sentiment_manager = None
 
@@ -81,9 +123,9 @@ class TrainingThread(QtCore.QThread):
         self.sentiment_manager.train()
 
 
-class AnalysisThread(QtCore.QThread):
+class AnalysisThread(QThread):
     def __init__(self, interaction_data, test_file, feature_file):
-        QtCore.QThread.__init__(self)
+        QThread.__init__(self)
         self.interaction_data = interaction_data
         self.sentiment_manager = None
         self.test_file = test_file
@@ -98,5 +140,3 @@ class AnalysisThread(QtCore.QThread):
             pickled_directory=self.interaction_data.sentiment_dictionary['pickled_path'],
             emitter=self)
         self.sentiment_manager.result(test_file_path=self.test_file, corpus_feature_file_path=self.feature_file)
-
-

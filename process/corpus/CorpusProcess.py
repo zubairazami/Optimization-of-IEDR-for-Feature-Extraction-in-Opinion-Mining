@@ -36,13 +36,14 @@ class Corpus(object):
         """
         counter = 0
         total_files = len(self.corpus_raw_document_list)
-        signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "Candidate Feature extracted from : ")
+        signal_emitter.emit_signal("Candidate Feature extracted from : ")
+
         for document_path in self.corpus_raw_document_list:
             file_name = Document(document_path).evaluate_term_frequency()
-            signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "\t"+file_name)
+            signal_emitter.emit_signal("\t"+file_name)
             counter += 1
             print(counter, end='\r')
-            signal_emitter.emit(QtCore.SIGNAL("update_cfe_progressbar"), counter, total_files)
+            signal_emitter.emit_signal(counter, total_files)
         self._refresh()
         print(counter)
 

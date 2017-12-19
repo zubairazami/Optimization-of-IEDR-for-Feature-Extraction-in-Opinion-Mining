@@ -132,11 +132,11 @@ class CFEWidget(QtWidgets.QWidget):
                 if self.interaction_data.new_thread_allowable:
                     self.cfe_thread = CandidateFeatureExtractionThread(interaction_data=self.interaction_data,
                                                                        dependant=use_dependent_corpus)
-                    QtCore.QObject.connect(self.cfe_thread, QtCore.SIGNAL("update_cfe_text_browser"),
-                                           self.update_text_browser)
-                    QtCore.QObject.connect(self.cfe_thread, QtCore.SIGNAL("update_cfe_progressbar"),
-                                           self.update_progressbar)
-                    QtCore.QObject.connect(self.cfe_thread, QtCore.SIGNAL("finished()"), self.on_completion)
+
+                    self.cfe_thread.connect_all(on_text_update=self.update_text_browser,
+                                                on_progressbar_update=self.update_progressbar,
+                                                on_completion=self.on_completion)
+
                     self.interaction_data.deny_new_thread()
                     self.cfe_textarea.clear()
                     self.cfe_progressbar.setValue(0)
@@ -223,11 +223,10 @@ class DRCWidget(QtWidgets.QWidget):
                     self.drc_thread = DomainRelevanceCalculationThread(interaction_data=self.interaction_data,
                                                                        dependant=use_dependent_corpus,
                                                                        use_modified_iedr=use_modified_iedr)
-                    QtCore.QObject.connect(self.drc_thread, QtCore.SIGNAL("update_drc_text_browser"),
-                                           self.update_text_browser)
-                    QtCore.QObject.connect(self.drc_thread, QtCore.SIGNAL("update_drc_progressbar"),
-                                           self.update_progressbar)
-                    QtCore.QObject.connect(self.drc_thread, QtCore.SIGNAL("finished()"), self.on_completion)
+                    self.drc_thread.connect_all(on_text_update=self.update_text_browser,
+                                                on_progressbar_update=self.update_progressbar,
+                                                on_completion=self.on_completion)
+
                     self.interaction_data.deny_new_thread()
                     self.drc_textarea.clear()
                     self.drc_progressbar.setValue(0)

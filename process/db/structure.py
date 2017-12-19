@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, Float, String, Table, For
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
-engine = create_engine('mysql+pymysql://root:rootbadhon@localhost:3306/IEDR')
+engine = create_engine('mysql+pymysql://root@localhost:3306/IEDR')
 Base = declarative_base()
 
 
