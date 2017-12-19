@@ -1,11 +1,14 @@
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 from os.path import expanduser
+
+
 from interaction.thread_collection import CandidateFeatureExtractionThread, DomainRelevanceCalculationThread, \
     ActualFeatureExtractionThread
 from process.manage import recreate_database, FeatureExtractor
 
 
-class ModifiedComboBox(QtGui.QComboBox):
+
+class ModifiedComboBox(QtWidgets.QComboBox):
     popupAboutToBeShown = QtCore.pyqtSignal()
 
     def showPopup(self):
@@ -13,18 +16,18 @@ class ModifiedComboBox(QtGui.QComboBox):
         super(ModifiedComboBox, self).showPopup()
 
 
-class CSWidget(QtGui.QWidget):
+class CSWidget(QtWidgets.QWidget):
     def __init__(self, interaction_data):
         super(CSWidget, self).__init__()
         self.interaction_data = interaction_data
 
-        self.ddc_label = QtGui.QLabel(self)
-        self.ddc_textarea = QtGui.QTextBrowser(self)
-        self.dic_textarea = QtGui.QTextBrowser(self)
-        self.ddc_pushbutton = QtGui.QPushButton(self)
-        self.sc_pushbutton = QtGui.QPushButton(self)
-        self.dic_pushbutton = QtGui.QPushButton(self)
-        self.dic_label = QtGui.QLabel(self)
+        self.ddc_label = QtWidgets.QLabel(self)
+        self.ddc_textarea = QtWidgets.QTextBrowser(self)
+        self.dic_textarea = QtWidgets.QTextBrowser(self)
+        self.ddc_pushbutton = QtWidgets.QPushButton(self)
+        self.sc_pushbutton = QtWidgets.QPushButton(self)
+        self.dic_pushbutton = QtWidgets.QPushButton(self)
+        self.dic_label = QtWidgets.QLabel(self)
         self.setup_ui()
 
     def setup_ui(self):
@@ -64,12 +67,12 @@ class CSWidget(QtGui.QWidget):
         sender = self.sender()
         if sender == self.ddc_pushbutton:
             file = str(
-                QtGui.QFileDialog.getExistingDirectory(None, "Select Corpus Directory", expanduser('~') + "/dataset"))
+                QtWidgets.QFileDialog.getExistingDirectory(None, "Select Corpus Directory", expanduser('~') + "/dataset"))
             self.ddc_textarea.setText(file)
 
         if sender == self.dic_pushbutton:
             file = str(
-                QtGui.QFileDialog.getExistingDirectory(None, "Select Corpus Directory", expanduser('~') + "/dataset"))
+                QtWidgets.QFileDialog.getExistingDirectory(None, "Select Corpus Directory", expanduser('~') + "/dataset"))
             self.dic_textarea.setText(file)
 
         if sender == self.sc_pushbutton:
@@ -80,26 +83,26 @@ class CSWidget(QtGui.QWidget):
                 self.interaction_data.set_corpus_dictionary(domain_dependent_corpus_path=domain_dependent_corpus_path,
                                                             domain_independent_corpus_path=domain_independent_corpus_path)
 
-                QtGui.QMessageBox.about(self, "Corpora Set successful",
+                QtWidgets.QMessageBox.about(self, "Corpora Set successful",
                                         "Domain Dependant Corpus :    " + domain_dependent_corpus_path + "\n\nDomain Independent Corpus :    " + domain_independent_corpus_path)
                 self.sc_pushbutton.setDisabled(False)
             else:
                 message = "A background process is already running.\n"
                 message += "Wait for it to be completed to set corpora directories again."
-                QtGui.QMessageBox.about(self, "Background Process Running", message)
+                QtWidgets.QMessageBox.about(self, "Background Process Running", message)
 
 
-class CFEWidget(QtGui.QWidget):
+class CFEWidget(QtWidgets.QWidget):
     def __init__(self, interaction_data):
         super(CFEWidget, self).__init__()
         self.interaction_data = interaction_data
         self.cfe_thread = None
 
-        self.cfe_textarea = QtGui.QTextBrowser(self)
-        self.cfe_progressbar = QtGui.QProgressBar(self)
-        self.cfe_pushbutton = QtGui.QPushButton(self)
-        self.cfe_dic_radiobutton = QtGui.QRadioButton(self)
-        self.cfe_ddc_radiobutton = QtGui.QRadioButton(self)
+        self.cfe_textarea = QtWidgets.QTextBrowser(self)
+        self.cfe_progressbar = QtWidgets.QProgressBar(self)
+        self.cfe_pushbutton = QtWidgets.QPushButton(self)
+        self.cfe_dic_radiobutton = QtWidgets.QRadioButton(self)
+        self.cfe_ddc_radiobutton = QtWidgets.QRadioButton(self)
         self.setup_ui()
 
     def setup_ui(self):
@@ -140,12 +143,12 @@ class CFEWidget(QtGui.QWidget):
                     self.cfe_thread.start()
                 else:
                     message = "A background process is already running.\nWait for it to be completed to start a new process"
-                    QtGui.QMessageBox.about(self, "Background Process Running", message)
+                    QtWidgets.QMessageBox.about(self, "Background Process Running", message)
 
             else:
                 message = "Directories for Corpora are not set properly."
                 message += "\nGo to 'Corpus Selection' tab & select proper corpora directories."
-                QtGui.QMessageBox.about(self, "Corpora Directory Error", message)
+                QtWidgets.QMessageBox.about(self, "Corpora Directory Error", message)
 
     def update_progressbar(self, completed, total):
         value = int((completed * 100.0) / total)
@@ -158,22 +161,22 @@ class CFEWidget(QtGui.QWidget):
         self.cfe_thread = None
         self.interaction_data.allow_new_thread()
         message = "Candidate Feature Extraction Completed"
-        QtGui.QMessageBox.about(self, "Task Complete", message)
+        QtWidgets.QMessageBox.about(self, "Task Complete", message)
 
 
-class DRCWidget(QtGui.QWidget):
+class DRCWidget(QtWidgets.QWidget):
     def __init__(self, interaction_data):
         super(DRCWidget, self).__init__()
         self.interaction_data = interaction_data
         self.drc_thread = None
 
-        self.drc_textarea = QtGui.QTextEdit(self)
-        self.drc_progressbar = QtGui.QProgressBar(self)
-        self.drc_pushbutton = QtGui.QPushButton(self)
-        self.drc_dic_radiobutton = QtGui.QRadioButton(self)
-        self.drc_ddc_radiobutton = QtGui.QRadioButton(self)
-        self.drc_umwe_checkbox = QtGui.QCheckBox(self)
-        self.drc_cud_checkbox = QtGui.QCheckBox(self)
+        self.drc_textarea = QtWidgets.QTextEdit(self)
+        self.drc_progressbar = QtWidgets.QProgressBar(self)
+        self.drc_pushbutton = QtWidgets.QPushButton(self)
+        self.drc_dic_radiobutton = QtWidgets.QRadioButton(self)
+        self.drc_ddc_radiobutton = QtWidgets.QRadioButton(self)
+        self.drc_umwe_checkbox = QtWidgets.QCheckBox(self)
+        self.drc_cud_checkbox = QtWidgets.QCheckBox(self)
         self.setup_ui()
 
     def setup_ui(self):
@@ -232,12 +235,12 @@ class DRCWidget(QtGui.QWidget):
                 else:
                     message = "A background process is already running.\n\
                                Wait for it to be completed to start a new process"
-                    QtGui.QMessageBox.about(self, "Background Process Running", message)
+                    QtWidgets.QMessageBox.about(self, "Background Process Running", message)
 
             else:
                 message = "Directories for Corpora are not set properly."
                 message += "\nGo to 'Corpus Selection' tab & select proper corpora directories."
-                QtGui.QMessageBox.about(self, "Corpora Directory Error", message)
+                QtWidgets.QMessageBox.about(self, "Corpora Directory Error", message)
 
     def update_progressbar(self, completed, total):
         value = int((completed * 100.0) / total)
@@ -250,32 +253,32 @@ class DRCWidget(QtGui.QWidget):
         self.drc_thread = None
         self.interaction_data.allow_new_thread()
         message = "Domain Relevance Calculation Completed"
-        QtGui.QMessageBox.about(self, "Task Complete", message)
+        QtWidgets.QMessageBox.about(self, "Task Complete", message)
 
 
-class AFEWidget(QtGui.QWidget):
+class AFEWidget(QtWidgets.QWidget):
     def __init__(self, interaction_data):
         super(AFEWidget, self).__init__()
         self.interaction_data = interaction_data
 
-        self.extracted_features_taxt_area = QtGui.QTextBrowser(self)
-        self.vertical_line = QtGui.QFrame(self)
-        self.horizontal_line = QtGui.QFrame(self)
-        self.domain_relevance_parcentage_label = QtGui.QLabel(self)
-        self.domain_relevance_actual_label = QtGui.QLabel(self)
-        self.extracted_features_label = QtGui.QLabel(self)
-        self.dr_p_button = QtGui.QPushButton(self)
-        self.dr_a_button = QtGui.QPushButton(self)
-        self.idr_p_combo = QtGui.QDoubleSpinBox(self)
-        self.edr_p_combo = QtGui.QDoubleSpinBox(self)
-        self.idr_p_label = QtGui.QLabel(self)
-        self.edr_p_label = QtGui.QLabel(self)
+        self.extracted_features_taxt_area = QtWidgets.QTextBrowser(self)
+        self.vertical_line = QtWidgets.QFrame(self)
+        self.horizontal_line = QtWidgets.QFrame(self)
+        self.domain_relevance_parcentage_label = QtWidgets.QLabel(self)
+        self.domain_relevance_actual_label = QtWidgets.QLabel(self)
+        self.extracted_features_label = QtWidgets.QLabel(self)
+        self.dr_p_button = QtWidgets.QPushButton(self)
+        self.dr_a_button = QtWidgets.QPushButton(self)
+        self.idr_p_combo = QtWidgets.QDoubleSpinBox(self)
+        self.edr_p_combo = QtWidgets.QDoubleSpinBox(self)
+        self.idr_p_label = QtWidgets.QLabel(self)
+        self.edr_p_label = QtWidgets.QLabel(self)
         self.idr_a_combo = ModifiedComboBox(self)
         self.edr_a_combo = ModifiedComboBox(self)
-        self.idr_a_label = QtGui.QLabel(self)
-        self.edr_a_label = QtGui.QLabel(self)
-        self.umidr_a_checkbutton = QtGui.QCheckBox(self)
-        self.umedr_a_checkbutton = QtGui.QCheckBox(self)
+        self.idr_a_label = QtWidgets.QLabel(self)
+        self.edr_a_label = QtWidgets.QLabel(self)
+        self.umidr_a_checkbutton = QtWidgets.QCheckBox(self)
+        self.umedr_a_checkbutton = QtWidgets.QCheckBox(self)
         self.afe_thread = None
         self.setup_ui()
 
@@ -284,12 +287,12 @@ class AFEWidget(QtGui.QWidget):
         self.extracted_features_label.setText("Extracted Features")
 
         self.vertical_line.setGeometry(QtCore.QRect(440, 20, 20, 431))
-        self.vertical_line.setFrameShape(QtGui.QFrame.VLine)
-        self.vertical_line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.vertical_line.setFrameShape(QtWidgets.QFrame.VLine)
+        self.vertical_line.setFrameShadow(QtWidgets.QFrame.Sunken)
 
         self.horizontal_line.setGeometry(QtCore.QRect(460, 210, 451, 20))
-        self.horizontal_line.setFrameShape(QtGui.QFrame.HLine)
-        self.horizontal_line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.horizontal_line.setFrameShape(QtWidgets.QFrame.HLine)
+        self.horizontal_line.setFrameShadow(QtWidgets.QFrame.Sunken)
 
         self.domain_relevance_parcentage_label.setGeometry(QtCore.QRect(460, 20, 461, 20))
         self.domain_relevance_parcentage_label.setText("Domain Relevance ( Percentage )")
@@ -405,7 +408,7 @@ class AFEWidget(QtGui.QWidget):
         else:
             message = "Directories for Corpora are not set properly."
             message += "\nGo to 'Corpus Selection' tab & select proper corpora directories."
-            QtGui.QMessageBox.about(self, "Corpora Directory Error", message)
+            QtWidgets.QMessageBox.about(self, "Corpora Directory Error", message)
 
     def median_action(self):
         status_sender = self.sender()
@@ -451,12 +454,12 @@ class AFEWidget(QtGui.QWidget):
             else:
                 message = "A background process is already running.\n\
                                Wait for it to be completed to start a new process"
-                QtGui.QMessageBox.about(self, "Background Process Running", message)
+                QtWidgets.QMessageBox.about(self, "Background Process Running", message)
 
         else:
             message = "Directories for Corpora are not set properly."
             message += "\nGo to 'Corpus Selection' tab & select proper corpora directories."
-            QtGui.QMessageBox.about(self, "Corpora Directory Error", message)
+            QtWidgets.QMessageBox.about(self, "Corpora Directory Error", message)
 
     def show_features(self, feature_list):
         self.afe_thread = None
@@ -466,5 +469,5 @@ class AFEWidget(QtGui.QWidget):
         for feature in feature_list:
             self.extracted_features_taxt_area.append(feature)
 
-        QtGui.QMessageBox.about(self, "Task Complete", "Feature extraction Completed")
+        QtWidgets.QMessageBox.about(self, "Task Complete", "Feature extraction Completed")
         self.interaction_data.allow_new_thread()

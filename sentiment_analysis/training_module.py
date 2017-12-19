@@ -8,7 +8,7 @@ from sklearn.svm import SVC, LinearSVC, NuSVC
 from nltk.classify import ClassifierI
 from statistics import mode
 from nltk.tokenize import word_tokenize
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class VoteClassifier(ClassifierI):

@@ -2,7 +2,7 @@ from os.path import expanduser
 from process.corpus.CorpusProcess import Corpus
 from process.db.structure import clean_up
 from process.db.interaction import PerformanceInteraction
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class ProcessManager:

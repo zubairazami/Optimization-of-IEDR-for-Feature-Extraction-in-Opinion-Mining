@@ -1,6 +1,6 @@
 import random
 import nltk
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class SentimentTesting():

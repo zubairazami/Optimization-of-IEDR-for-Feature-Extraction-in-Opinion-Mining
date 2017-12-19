@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 from ui.widget_collection import CFEWidget, DRCWidget, AFEWidget, CSWidget
 from ui.widget_collection_extra import SetupWidget, TrainingWidget, AnalysisWidget
 
@@ -7,19 +7,19 @@ class UiMainWindow(object):
     def __init__(self, interaction_data):
 
         self.interaction_data = interaction_data
-        self.main_window = QtGui.QMainWindow()
-        self.base_widget = QtGui.QWidget(self.main_window)
-        self.main_tab_widget = QtGui.QTabWidget(self.base_widget)
+        self.main_window = QtWidgets.QMainWindow()
+        self.base_widget = QtWidgets.QWidget(self.main_window)
+        self.main_tab_widget = QtWidgets.QTabWidget(self.base_widget)
 
-        self.fe_tab = QtGui.QWidget()
-        self.fbs_tab = QtGui.QWidget()
-        self.fe_tab_widget = QtGui.QTabWidget(self.fe_tab)
+        self.fe_tab = QtWidgets.QWidget()
+        self.fbs_tab = QtWidgets.QWidget()
+        self.fe_tab_widget = QtWidgets.QTabWidget(self.fe_tab)
         self.cs_tab = CSWidget(interaction_data=interaction_data)
         self.cfe_tab = CFEWidget(interaction_data=interaction_data)
         self.drc_tab = DRCWidget(interaction_data=interaction_data)
         self.afe_tab = AFEWidget(interaction_data=interaction_data)
 
-        self.fbs_tab_widget = QtGui.QTabWidget(self.fbs_tab)
+        self.fbs_tab_widget = QtWidgets.QTabWidget(self.fbs_tab)
         self.setup_tab = SetupWidget(interaction_data=interaction_data)
         self.training_tab = TrainingWidget(interaction_data=interaction_data)
         self.result_tab = AnalysisWidget(interaction_data=interaction_data)

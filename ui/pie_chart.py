@@ -1,4 +1,5 @@
-from PyQt4.QtGui import QGraphicsScene, QColor, QGraphicsEllipseItem
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsEllipseItem
+from PyQt5.QtGui import QColor
 
 
 class PieChart(object):

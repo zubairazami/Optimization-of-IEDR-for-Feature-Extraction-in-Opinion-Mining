@@ -1,16 +1,16 @@
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 from os.path import expanduser
 from interaction.thread_collection import TrainingThread, AnalysisThread
 from math import floor
 from ui.pie_chart import PieChart
 
 
-class SetupWidget(QtGui.QWidget):
+class SetupWidget(QtWidgets.QWidget):
     def __init__(self, interaction_data):
         super(SetupWidget, self).__init__()
         self.interaction_data = interaction_data
 
-        self.setup_label = QtGui.QLabel(self)
+        self.setup_label = QtWidgets.QLabel(self)
         self.setup_label.setGeometry(QtCore.QRect(70, 60, 770, 30))
         self.setup_label.setText("Set up Files & Directory")
         self.setup_label.setAlignment(QtCore.Qt.AlignCenter)
@@ -20,18 +20,18 @@ class SetupWidget(QtGui.QWidget):
         font.setWeight(75)
         self.setup_label.setFont(font)
 
-        self.pos_file_textarea = QtGui.QTextBrowser(self)
-        self.pickled_directory_textarea = QtGui.QTextBrowser(self)
-        self.neg_file_textarea = QtGui.QTextBrowser(self)
+        self.pos_file_textarea = QtWidgets.QTextBrowser(self)
+        self.pickled_directory_textarea = QtWidgets.QTextBrowser(self)
+        self.neg_file_textarea = QtWidgets.QTextBrowser(self)
 
-        self.pos_file_label = QtGui.QLabel(self)
-        self.neg_file_label = QtGui.QLabel(self)
+        self.pos_file_label = QtWidgets.QLabel(self)
+        self.neg_file_label = QtWidgets.QLabel(self)
 
-        self.pfd_label = QtGui.QLabel(self)
-        self.pscf_pushbutton = QtGui.QPushButton(self)
-        self.nscf_pushbutton = QtGui.QPushButton(self)
-        self.pfd_pushbutton = QtGui.QPushButton(self)
-        self.set_pushbutton = QtGui.QPushButton(self)
+        self.pfd_label = QtWidgets.QLabel(self)
+        self.pscf_pushbutton = QtWidgets.QPushButton(self)
+        self.nscf_pushbutton = QtWidgets.QPushButton(self)
+        self.pfd_pushbutton = QtWidgets.QPushButton(self)
+        self.set_pushbutton = QtWidgets.QPushButton(self)
 
         self.setup_ui()
 
@@ -71,17 +71,17 @@ class SetupWidget(QtGui.QWidget):
         sender = self.sender()
 
         if sender == self.pscf_pushbutton:
-            file = str(QtGui.QFileDialog.getOpenFileName(self, "Select Positive Sentiment containing file",
+            file = str(QtWidgets.QFileDialog.getOpenFileName(self, "Select Positive Sentiment containing file",
                                                          expanduser('~') + "/dataset"))
             self.pos_file_textarea.setText(file)
 
         if sender == self.nscf_pushbutton:
-            file = str(QtGui.QFileDialog.getOpenFileName(self, "Select Negative Sentiment containing file",
+            file = str(QtWidgets.QFileDialog.getOpenFileName(self, "Select Negative Sentiment containing file",
                                                          expanduser('~') + "/dataset"))
             self.neg_file_textarea.setText(file)
 
         if sender == self.pfd_pushbutton:
-            file = str(QtGui.QFileDialog.getExistingDirectory(None, "Select Pickled files directory",
+            file = str(QtWidgets.QFileDialog.getExistingDirectory(None, "Select Pickled files directory",
                                                               expanduser('~') + "/dataset"))
             self.pickled_directory_textarea.setText(file)
 
@@ -92,23 +92,23 @@ class SetupWidget(QtGui.QWidget):
                 pickled = self.pickled_directory_textarea.toPlainText()
                 self.set_pushbutton.setDisabled(True)
                 self.interaction_data.set_sentiment_dictionary(pos=pos, neg=neg, pickled=pickled)
-                QtGui.QMessageBox.about(self, "successful", "Required files and directories are set")
+                QtWidgets.QMessageBox.about(self, "successful", "Required files and directories are set")
                 self.set_pushbutton.setDisabled(False)
         else:
             message = "A background process is already running.\n"
             message += "Wait for it to be completed to set sentiment directories again."
-            QtGui.QMessageBox.about(self, "Background Process Running", message)
+            QtWidgets.QMessageBox.about(self, "Background Process Running", message)
 
 
-class TrainingWidget(QtGui.QWidget):
+class TrainingWidget(QtWidgets.QWidget):
     def __init__(self, interaction_data):
         super(TrainingWidget, self).__init__()
         self.interaction_data = interaction_data
 
-        self.training_label = QtGui.QLabel(self)
-        self.training_console = QtGui.QTextBrowser(self)
-        self.training_progressbar = QtGui.QProgressBar(self)
-        self.train_pushbutton = QtGui.QPushButton(self)
+        self.training_label = QtWidgets.QLabel(self)
+        self.training_console = QtWidgets.QTextBrowser(self)
+        self.training_progressbar = QtWidgets.QProgressBar(self)
+        self.train_pushbutton = QtWidgets.QPushButton(self)
         self.training_thread = None
 
         self.setup_ui()
@@ -146,11 +146,11 @@ class TrainingWidget(QtGui.QWidget):
             else:
                 message = "A background process is already running.\n"
                 message += "Wait for it to be completed to set sentiment directories again."
-                QtGui.QMessageBox.about(self, "Background Process Running", message)
+                QtWidgets.QMessageBox.about(self, "Background Process Running", message)
         else:
             message = "Directories for Sentiment files & pickled folder are not set properly."
             message += "\nGo to 'Setup Files and Directory' tab to select properly."
-            QtGui.QMessageBox.about(self, "Sentiment Directory Error", message)
+            QtWidgets.QMessageBox.about(self, "Sentiment Directory Error", message)
 
     def update_progress_1(self, completed, total):
         value = int(floor((completed * 80.00) / total))
@@ -165,30 +165,30 @@ class TrainingWidget(QtGui.QWidget):
 
     def on_completion(self):
         message = "Completed Training & accuracy calculation of the classifiers"
-        QtGui.QMessageBox.about(self, "Task Completed.", message)
+        QtWidgets.QMessageBox.about(self, "Task Completed.", message)
         self.interaction_data.allow_new_thread()
 
 
-class AnalysisWidget(QtGui.QWidget):
+class AnalysisWidget(QtWidgets.QWidget):
     def __init__(self, interaction_data):
         super(AnalysisWidget, self).__init__()
         self.interaction_data = interaction_data
         self.feature_dict_with_sentiment = dict()
         self.feature_counter = 0
 
-        self.table_widget = QtGui.QTableWidget(self)
-        self.graphics_widget = QtGui.QWidget(self)
-        self.graphicsView = QtGui.QGraphicsView(self)
-        self.tbaf_textarea = QtGui.QTextBrowser(self)
-        self.acf_textarea = QtGui.QTextBrowser(self)
-        self.tbaf_pushbutton = QtGui.QPushButton(self)
-        self.acf_pushbutton = QtGui.QPushButton(self)
-        self.analysis_button = QtGui.QPushButton(self)
+        self.table_widget = QtWidgets.QTableWidget(self)
+        self.graphics_widget = QtWidgets.QWidget(self)
+        self.graphicsView = QtWidgets.QGraphicsView(self)
+        self.tbaf_textarea = QtWidgets.QTextBrowser(self)
+        self.acf_textarea = QtWidgets.QTextBrowser(self)
+        self.tbaf_pushbutton = QtWidgets.QPushButton(self)
+        self.acf_pushbutton = QtWidgets.QPushButton(self)
+        self.analysis_button = QtWidgets.QPushButton(self)
         self.analysis_thread = None
 
-        self.feature_label = QtGui.QLabel(self)
-        self.positive_label = QtGui.QLabel(self)
-        self.negative_label = QtGui.QLabel(self)
+        self.feature_label = QtWidgets.QLabel(self)
+        self.positive_label = QtWidgets.QLabel(self)
+        self.negative_label = QtWidgets.QLabel(self)
 
         self.pie_chart = PieChart()
 
@@ -249,7 +249,7 @@ class AnalysisWidget(QtGui.QWidget):
                     test_file = self.tbaf_textarea.toPlainText()
                     feature_file = self.acf_textarea.toPlainText()
                     if len(test_file) == 0 or len(feature_file) == 0:
-                        QtGui.QMessageBox.about(self, "Choose files Correctly",
+                        QtWidgets.QMessageBox.about(self, "Choose files Correctly",
                                                 "Either or both of the files are not selected properly.")
                     else:
                         self.analysis_thread = AnalysisThread(interaction_data=self.interaction_data,
@@ -264,29 +264,29 @@ class AnalysisWidget(QtGui.QWidget):
                         self.analysis_thread.start()
 
                 if sender == self.tbaf_pushbutton:
-                    file = str(QtGui.QFileDialog.getOpenFileName(self, "Select the file to be analyzed",
+                    file = str(QtWidgets.QFileDialog.getOpenFileName(self, "Select the file to be analyzed",
                                                                  expanduser('~') + "/dataset"))
                     self.tbaf_textarea.setText(file)
 
                 if sender == self.acf_pushbutton:
-                    file = str(QtGui.QFileDialog.getOpenFileName(self, "Select the file containing extracted features",
+                    file = str(QtWidgets.QFileDialog.getOpenFileName(self, "Select the file containing extracted features",
                                                                  expanduser('~') + "/dataset"))
                     self.acf_textarea.setText(file)
 
             else:
                 message = "A background process is already running.\n"
                 message += "Wait for it to be completed to set sentiment directories again."
-                QtGui.QMessageBox.about(self, "Background Process Running", message)
+                QtWidgets.QMessageBox.about(self, "Background Process Running", message)
         else:
             message = "Directories for Sentiment files & pickled folder are not set properly."
             message += "\nGo to 'Setup Files and Directory' tab to select properly."
-            QtGui.QMessageBox.about(self, "Sentiment Directory Error", message)
+            QtWidgets.QMessageBox.about(self, "Sentiment Directory Error", message)
 
     def update(self, feature, pos, neg):
         self.feature_dict_with_sentiment[feature] = [pos, neg]
         self.feature_counter += 1
         self.table_widget.setRowCount(self.feature_counter + 1)
-        self.table_widget.setItem(self.feature_counter - 1, 0, QtGui.QTableWidgetItem(feature))
+        self.table_widget.setItem(self.feature_counter - 1, 0, QtWidgets.QTableWidgetItem(feature))
 
     def on_completion(self):
         self.table_widget.setRowCount(self.feature_counter)

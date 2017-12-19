@@ -2,7 +2,7 @@ from glob import glob
 from process.corpus.DocumentProcess import Document
 from math import log10, sqrt
 from process.db.interaction import Interaction
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class Corpus(object):

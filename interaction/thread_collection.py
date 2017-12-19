@@ -1,6 +1,6 @@
 from process.manage import ProcessManager, FeatureExtractor
 from sentiment_analysis.manage import SentimentManager
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class CandidateFeatureExtractionThread(QtCore.QThread):
