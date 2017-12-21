@@ -27,73 +27,72 @@ class ProcessManager:
     def calculate_domain_relevance(self, signal_emitter, modified_weight_equation):
         completed_task = 0
         signal_emitter.emit_signal(text="Corpus    :    " + self.name + "\nDomain Relevance Calculation started")
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
-
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
 
         self.corpus.upload_documents()
         print(self.name + " : Document List Uploaded.")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : Document List Uploaded")
 
         # much time
         self.corpus.upload_term_frequency()
         print(self.name + " : Term Frequency uploaded.")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : Term Frequency uploaded")
 
         self.corpus.upload_document_frequency()
         print(self.name + " : Document Frequency uploaded.")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : Document Frequency uploaded")
 
         # moderate time
         self.corpus.evaluate_terms_weight(modified_weight_equation=modified_weight_equation)
         print(self.name + " : Wij calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : Wij calculated & uploaded")
 
         self.corpus.evaluate_wi()
         print(self.name + " : Wi calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : Wi calculated & uploaded")
 
         self.corpus.evaluate_si()
         print(self.name + " : Si calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : Si calculated & uploaded")
 
         self.corpus.evaluate_dispi()
         print(self.name + " : DISPERSIONi calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : DISPERSIONi calculated & uploaded")
 
         self.corpus.evaluate_wj()
         print(self.name + " : Wj calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : Wj calculated & uploaded")
 
         # moderate time
         self.corpus.evaluate_devij()
         print(self.name + " : DEVIATIONij calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : DEVIATIONij calculated & uploaded")
 
         self.corpus.evaluate_domain_relevance()
         print(self.name + " : DRi calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit_signal(completed_task_count=completed_task, total_task_count=10)
+        signal_emitter.emit_signal(text=None, completed_task_count=completed_task, total_task_count=10)
         signal_emitter.emit_signal(text=self.name + " : DRi calculated & uploaded")
         signal_emitter.emit_signal(text="Corpus    :    " + self.name + "\nDomain Relevance Calculation completed")
+        signal_emitter.emit_signal()
 
 
 class FeatureExtractor:
@@ -130,7 +129,7 @@ class FeatureExtractor:
             edr_threshold = edr if edr is not None else self._calculate_threshold(dependant=False)
 
         feature_list = self.pi_object.get_final_features(idr_threshold=idr_threshold, edr_threshold=edr_threshold)
-        with open(expanduser('~') + "/dataset/actual_corpus_features.txt", 'w', encoding='utf-8') as document:
+        with open(expanduser('~') + "/Desktop/Dataset/actual_corpus_features.txt", 'w', encoding='utf-8') as document:
             for feature in feature_list:
                 document.write(str(feature) + "\n")
         return feature_list

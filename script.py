@@ -14,4 +14,4 @@ if __name__ == "__main__":
 # # Necessary for creating database
 # from process.db.structure import clean_up
 # if __name__ == "__main__":
-# #     clean_up()
+#     clean_up()

@@ -446,7 +446,7 @@ class AFEWidget(QtWidgets.QWidget):
                 self.afe_thread = ActualFeatureExtractionThread(interaction_data=self.interaction_data, idr=idr,
                                                                 edr=edr, use_percentage=use_percentage)
 
-                QtCore.QObject.connect(self.afe_thread, QtCore.SIGNAL("afe"), self.show_features)
+                self.afe_thread.connect_all(on_feature_list_received=self.show_features)
                 self.interaction_data.deny_new_thread()
                 self.extracted_features_taxt_area.clear()
                 self.afe_thread.start()

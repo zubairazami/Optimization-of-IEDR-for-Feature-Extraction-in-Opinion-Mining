@@ -43,7 +43,7 @@ class Corpus(object):
             signal_emitter.emit_signal("\t"+file_name)
             counter += 1
             print(counter, end='\r')
-            signal_emitter.emit_signal(counter, total_files)
+            signal_emitter.emit_signal(text=None, completed_task_count=counter, total_task_count=total_files)
         self._refresh()
         print(counter)
 

@@ -8,22 +8,22 @@ Base = declarative_base()
 
 class Corpus(Base):
     __tablename__ = 'corpus'
-    corpus_id = Column(Integer, primary_key=True)
+    corpus_id = Column(Integer, primary_key=True, autoincrement=True)
     corpus_name = Column(String(100))
     document = relationship("Document")
 
 
 class Document(Base):
     __tablename__ = 'document'
-    document_id = Column(Integer, primary_key=True)
-    corpus_id = Column(Integer, ForeignKey('corpus.corpus_id'),primary_key=True)
+    document_id = Column(Integer, primary_key=True, autoincrement=True)
+    corpus_id = Column(Integer, ForeignKey('corpus.corpus_id'), primary_key=True)
     document_name = Column(String(100))
     weightj = Column(Float(6))
 
 
 class Term(Base):
     __tablename__ = 'term'
-    term_id = Column(Integer, primary_key=True)
+    term_id = Column(Integer, primary_key=True, autoincrement=True)
     term_name = Column(String(100))
 
 
