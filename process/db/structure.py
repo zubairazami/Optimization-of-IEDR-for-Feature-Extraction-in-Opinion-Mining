@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, Float, String, ForeignKey, Sequence
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 
 engine = create_engine('mysql+pymysql://root@localhost:3306/IEDR')
 Base = declarative_base()

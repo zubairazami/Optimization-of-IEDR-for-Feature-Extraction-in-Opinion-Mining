@@ -1,8 +1,7 @@
-from os.path import expanduser
 from process.corpus.CorpusProcess import Corpus
 from process.db.structure import clean_up
 from process.db.interaction import PerformanceInteraction
-from PyQt5 import QtCore
+from os.path import expanduser
 
 
 class ProcessManager:
@@ -100,8 +99,10 @@ class FeatureExtractor:
     def __init__(self, dependent_corpus, independent_corpus):
         self.dependent_corpus = dependent_corpus
         self.independent_corpus = independent_corpus
-        self.pi_object = PerformanceInteraction(dependent_corpus_name=self.dependent_corpus,
-                                                independent_corpus_name=self.independent_corpus)
+        self.pi_object = PerformanceInteraction(
+            dependent_corpus_name=self.dependent_corpus,
+            independent_corpus_name=self.independent_corpus
+        )
 
     def _calculate_threshold(self, percentage=None, dependant=True):
         """

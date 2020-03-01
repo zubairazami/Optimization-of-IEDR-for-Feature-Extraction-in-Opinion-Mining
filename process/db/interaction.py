@@ -44,8 +44,12 @@ class Interaction:
                 try:
                     term_object = self.get_or_create(Term, term_name=key)
                     document_object = self.get(Document, document_name=eval_document_name)
-                    self.get_or_create(TermDocument, term_id=term_object.term_id,
-                                       document_id=document_object.document_id, term_frequency=term_frequency)
+                    self.get_or_create(
+                        TermDocument,
+                        term_id=term_object.term_id,
+                        document_id=document_object.document_id,
+                        term_frequency=term_frequency
+                    )
                     self.get_or_create(TermCorpus, term_id=term_object.term_id, corpus_id=this_corpus_id)
                 except UnicodeEncodeError:
                     continue
@@ -60,9 +64,10 @@ class Interaction:
         document_list = self.get_corpus_document_id_list
         this_corpus_id = self.get_corpus_id
         for each_term_id in term_list:
-            document_frequency = self.session.query(TermDocument).filter(TermDocument.term_id == each_term_id,
-                                                                         TermDocument.document_id.in_(
-                                                                             document_list)).count()
+            document_frequency = self.session.query(TermDocument).filter(
+                TermDocument.term_id == each_term_id,
+                TermDocument.document_id.in_( document_list)
+            ).count()
             term_corpus_object = self.get(TermCorpus, term_id=each_term_id, corpus_id=this_corpus_id)
             if term_corpus_object is not None:
                 term_corpus_object.document_frequency = document_frequency
@@ -93,9 +98,10 @@ class Interaction:
         counter = 0
         for t_id in term_id_list:
             counter += 1
-            summation = self.session.query(func.sum(TermDocument.weightij)).filter(TermDocument.term_id == t_id,
-                                                                                   TermDocument.document_id.in_(
-                                                                                       document_id_list))
+            summation = self.session.query(func.sum(TermDocument.weightij)).filter(
+                TermDocument.term_id == t_id,
+                TermDocument.document_id.in_(document_id_list)
+            )
             term_corpus_object = self.get(TermCorpus, term_id=t_id, corpus_id=c_id)
             term_corpus_object.weighti = (1.0 * summation[0][0]) / N
             print(counter, end='\r')
@@ -128,9 +134,13 @@ class Interaction:
         inserts the average terms weight of document in table 'document'
         """
         documents = self.get_corpus_document_id_list
-        temp_list = self.session.query(TermDocument.document_id, func.count(TermDocument.term_id),
-                                       func.sum(TermDocument.weightij)).group_by(TermDocument.document_id).filter(
-            TermDocument.document_id.in_(documents))
+        temp_list = self.session.query(
+            TermDocument.document_id,
+            func.count(TermDocument.term_id),
+            func.sum(TermDocument.weightij)
+        ).group_by(TermDocument.document_id).filter(
+            TermDocument.document_id.in_(documents)
+        )
         dictionary = {temp[0]: temp[2] / (1.0 * temp[1]) for temp in temp_list}
         for key in dictionary:
             self.get(Document, document_id=key).weightj = dictionary[key]

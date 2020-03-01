@@ -38,9 +38,9 @@ class Performance(object):
         precision_recall_list = sorted(precision_recall_list, key=lambda x: x[1])
 
         if self.modified_weight_equation_use:
-            file_path = os.path.expanduser('~') + '/dataset/tf_prt.txt'
+            file_path = os.path.expanduser('~') + '/tf_prt.txt'
         else:
-            file_path = os.path.expanduser('~') + '/dataset/tf_idf_prt.txt'
+            file_path = os.path.expanduser('~') + '/tf_idf_prt.txt'
 
         with open(file_path, 'w', encoding='utf-8') as document:
             for each_tuple in precision_recall_list:

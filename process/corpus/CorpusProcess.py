@@ -1,8 +1,7 @@
 from glob import glob
-from process.corpus.DocumentProcess import Document
 from math import log10, sqrt
+from process.corpus.DocumentProcess import Document
 from process.db.interaction import Interaction
-from PyQt5 import QtCore
 
 
 class Corpus(object):
@@ -13,10 +12,8 @@ class Corpus(object):
         self.corpus_raw_document_list = glob(self.corpus_path + "raw/*")
         print(self.corpus_raw_document_list)
         self.corpus_evaluated_document_list = glob(self.corpus_path + "eval/*")
-        # self.corpus_raw_document_count = len(self.corpus_raw_document_list)
-        # self.corpus_evaluated_document_count = len(self.corpus_evaluated_document_list)
 
-        # creating in database communication obeject of class Intersection in this Class
+        # creating in database communication object of class Intersection in this Class
         # which gives all the methods of this class access to this object
         self.interaction = Interaction(self.corpus_name)
         self.interaction.create_corpus_entry()
@@ -38,16 +35,13 @@ class Corpus(object):
         counter = 0
         total_files = len(self.corpus_raw_document_list)
         signal_emitter.textSignal.emit("Candidate Feature extracted from : ")
-        # signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "Candidate Feature extracted from : ")
         for document_path in self.corpus_raw_document_list:
             print(document_path)
             file_name = Document(document_path).evaluate_term_frequency()
             signal_emitter.textSignal.emit("\t"+file_name)
-            # signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "\t"+file_name)
             counter += 1
             print(counter, end='\r')
             signal_emitter.progressSignal.emit(counter, total_files)
-            # signal_emitter.emit(QtCore.SIGNAL("update_cfe_progressbar"), counter, total_files)
         self._refresh()
         print(counter)
 
@@ -80,7 +74,8 @@ class Corpus(object):
                 try:
                     count = int(line[1])
                     my_dictionary[word] = count
-                except Exception as e:
+                except Exception as exception:
+                    print("Exception found ", exception)
                     continue
         return my_dictionary
 

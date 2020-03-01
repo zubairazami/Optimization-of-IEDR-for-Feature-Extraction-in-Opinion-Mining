@@ -28,9 +28,9 @@ class PrecisionRecall:
         fp = len(predicted_list) - tp
         try:
             c_precision = tp / (tp + fp)
-        except ZeroDivisionError as E:
+        except ZeroDivisionError as exception:
             c_precision = 0
-            print("precision exception")
+            print("precision exception ", exception)
         tp = 0
         for candidate in self.original_list:
             if self.is_same(candidate, predicted_list):
@@ -38,6 +38,7 @@ class PrecisionRecall:
         fn = len(self.original_list) - tp
         try:
             c_recall = tp / (tp + fn)
-        except ZeroDivisionError as E:
+        except ZeroDivisionError as exception:
             c_recall = 0
+            print("precision exception ", exception)
         return c_precision, c_recall
