@@ -2,7 +2,7 @@ from os.path import expanduser
 from process.corpus.CorpusProcess import Corpus
 from process.db.structure import clean_up
 from process.db.interaction import PerformanceInteraction
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class ProcessManager:
@@ -16,85 +16,84 @@ class ProcessManager:
 
     def extract_candidate_features(self, signal_emitter):
         # much time
-        signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"),
-                            "Corpus    :    " + self.name + "\nCandidate Feature Extraction started")
+        signal_emitter.textSignal.emit("Corpus    :    " + self.name + "\nCandidate Feature Extraction started")
         print(self.name + " : Candidate Feature Extraction started")
         self.corpus.evaluate_corpus_documents(signal_emitter)
         print(self.name + " : Candidate feature extracted")
-        signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"),
-                            "Corpus    :    " + self.name + "\nCandidate Feature Extraction completed")
+        signal_emitter.textSignal.emit("Corpus    :    " + self.name + "\nCandidate Feature Extraction completed")
+        # signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"),
+        #                     "Corpus    :    " + self.name + "\nCandidate Feature Extraction completed")
+        signal_emitter.finishSignal.emit()
 
     def calculate_domain_relevance(self, signal_emitter, modified_weight_equation):
         completed_task = 0
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"),
-                            "Corpus    :    " + self.name + "\nDomain Relevance Calculation started")
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
+        signal_emitter.textSignal.emit("Corpus    :    " + self.name + "\nDomain Relevance Calculation started")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         self.corpus.upload_documents()
         print(self.name + " : Document List Uploaded.")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : Document List Uploaded")
+        signal_emitter.textSignal.emit(self.name + " : Document List Uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         # much time
         self.corpus.upload_term_frequency()
         print(self.name + " : Term Frequency uploaded.")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : Term Frequency uploaded")
+        signal_emitter.textSignal.emit(self.name + " : Term Frequency uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         self.corpus.upload_document_frequency()
         print(self.name + " : Document Frequency uploaded.")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : Document Frequency uploaded")
+        signal_emitter.textSignal.emit(self.name + " : Document Frequency uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         # moderate time
         self.corpus.evaluate_terms_weight(modified_weight_equation=modified_weight_equation)
         print(self.name + " : Wij calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : Wij calculated & uploaded")
+        signal_emitter.textSignal.emit(self.name + " : Wij calculated & uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         self.corpus.evaluate_wi()
         print(self.name + " : Wi calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : Wi calculated & uploaded")
+        signal_emitter.textSignal.emit(self.name + " : Wi calculated & uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         self.corpus.evaluate_si()
         print(self.name + " : Si calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : Si calculated & uploaded")
+        signal_emitter.textSignal.emit(self.name + " : Si calculated & uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         self.corpus.evaluate_dispi()
         print(self.name + " : DISPERSIONi calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : DISPERSIONi calculated & uploaded")
+        signal_emitter.textSignal.emit(self.name + " : DISPERSIONi calculated & uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         self.corpus.evaluate_wj()
         print(self.name + " : Wj calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : Wj calculated & uploaded")
+        signal_emitter.textSignal.emit(self.name + " : Wj calculated & uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         # moderate time
         self.corpus.evaluate_devij()
         print(self.name + " : DEVIATIONij calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : DEVIATIONij calculated & uploaded")
+        signal_emitter.textSignal.emit(self.name + " : DEVIATIONij calculated & uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
 
         self.corpus.evaluate_domain_relevance()
         print(self.name + " : DRi calculated & uploaded")
         completed_task += 1
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_progressbar"), completed_task, 10)
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"), self.name + " : DRi calculated & uploaded")
-
-        signal_emitter.emit(QtCore.SIGNAL("update_drc_text_browser"),
-                            "Corpus    :    " + self.name + "\nDomain Relevance Calculation completed")
+        signal_emitter.textSignal.emit(self.name + " : DRi calculated & uploaded")
+        signal_emitter.progressSignal.emit(completed_task, 10)
+        signal_emitter.textSignal.emit("Corpus    :    " + self.name + "\nDomain Relevance Calculation completed")
+        signal_emitter.finishSignal.emit()
 
 
 class FeatureExtractor:
@@ -131,10 +130,11 @@ class FeatureExtractor:
             edr_threshold = edr if edr is not None else self._calculate_threshold(dependant=False)
 
         feature_list = self.pi_object.get_final_features(idr_threshold=idr_threshold, edr_threshold=edr_threshold)
-        with open(expanduser('~') + "/dataset/actual_corpus_features.txt", 'w', encoding='utf-8') as document:
+        with open(expanduser('~') + "/actual_corpus_features.txt", 'w', encoding='utf-8') as document:
             for feature in feature_list:
                 document.write(str(feature) + "\n")
         return feature_list
+
 
 def recreate_database():
     clean_up()

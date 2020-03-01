@@ -7,11 +7,14 @@ import unicodedata
 os.environ['STANFORD_PARSER'] = os.path.expanduser('~') + '/stanford-parser-full-2015-04-20'
 os.environ['STANFORD_MODELS'] = os.path.expanduser('~') + '/stanford-parser-full-2015-04-20'
 
+
 def strip_accents(s):
         return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
 
+
 class Parse:
     def __init__(self, file_path):
+
         self.file_path = file_path
         self.parser = stanford.StanfordParser(
             model_path=os.path.expanduser(

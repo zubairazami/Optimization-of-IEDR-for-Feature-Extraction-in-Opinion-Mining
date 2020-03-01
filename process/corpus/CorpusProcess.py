@@ -2,7 +2,7 @@ from glob import glob
 from process.corpus.DocumentProcess import Document
 from math import log10, sqrt
 from process.db.interaction import Interaction
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class Corpus(object):
@@ -11,6 +11,7 @@ class Corpus(object):
         # if corpus directory don't have a '/' at the end then it is added
         self.corpus_name = name
         self.corpus_raw_document_list = glob(self.corpus_path + "raw/*")
+        print(self.corpus_raw_document_list)
         self.corpus_evaluated_document_list = glob(self.corpus_path + "eval/*")
         # self.corpus_raw_document_count = len(self.corpus_raw_document_list)
         # self.corpus_evaluated_document_count = len(self.corpus_evaluated_document_list)
@@ -36,13 +37,17 @@ class Corpus(object):
         """
         counter = 0
         total_files = len(self.corpus_raw_document_list)
-        signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "Candidate Feature extracted from : ")
+        signal_emitter.textSignal.emit("Candidate Feature extracted from : ")
+        # signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "Candidate Feature extracted from : ")
         for document_path in self.corpus_raw_document_list:
+            print(document_path)
             file_name = Document(document_path).evaluate_term_frequency()
-            signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "\t"+file_name)
+            signal_emitter.textSignal.emit("\t"+file_name)
+            # signal_emitter.emit(QtCore.SIGNAL("update_cfe_text_browser"), "\t"+file_name)
             counter += 1
             print(counter, end='\r')
-            signal_emitter.emit(QtCore.SIGNAL("update_cfe_progressbar"), counter, total_files)
+            signal_emitter.progressSignal.emit(counter, total_files)
+            # signal_emitter.emit(QtCore.SIGNAL("update_cfe_progressbar"), counter, total_files)
         self._refresh()
         print(counter)
 

@@ -1,6 +1,6 @@
 import random
 import nltk
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class SentimentTesting():
@@ -40,10 +40,8 @@ class SentimentTesting():
 
     # calculate feature sentiments
     def feature_sentiment(self, feature):
-        feature_dictionary_with_sentiment = dict()
         feature_pos = 0
         feature_neg = 0
-        feature_neutral = 0
         counter = 0
 
         for i in range(len(self.test_data)):
@@ -60,12 +58,11 @@ class SentimentTesting():
 
         if counter == 0:
             return
-        pospercent = round((float(feature_pos) / counter) * 100, 2)
-        negpercent = round((float(feature_neg) / counter) * 100, 2)
-        #neautralpercent = round((float(feature_neutral) / counter) * 100, 2)
+        positive_percent = round((float(feature_pos) / counter) * 100, 2)
+        negative_percent = round((float(feature_neg) / counter) * 100, 2)
 
-        self.signal_emitter.emit(QtCore.SIGNAL("analysis_signal"), feature, pospercent, negpercent)
-        print(feature, ":--- \t\t", "Positive: ", pospercent, "%, Negative: \t", negpercent, "%")
+        self.signal_emitter.analysisSignal.emit(feature, positive_percent, negative_percent)
+        print(feature, ":--- \t\t", "Positive: ", positive_percent, "%, Negative: \t", negative_percent, "%")
 
     # detemines the polarity and confidence of each review
     def test_run(self):

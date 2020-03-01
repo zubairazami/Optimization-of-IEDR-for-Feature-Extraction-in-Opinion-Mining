@@ -8,7 +8,7 @@ from sklearn.svm import SVC, LinearSVC, NuSVC
 from nltk.classify import ClassifierI
 from statistics import mode
 from nltk.tokenize import word_tokenize
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class VoteClassifier(ClassifierI):
@@ -41,13 +41,15 @@ class Training(object):
         self.positive_file_directory = positive_file_directory
         self.negative_file_directory = negative_file_directory
         self.pickled_directory = pickled_directory
-        self.pickled_dictionary = dict(documents_pickle="documents.pickle",
-                                       word_features_pickle="word_features5k.pickle",
-                                       naive_bayes_pickle="originalnaivebayes5k.pickle",
-                                       multinomial_naive_bayes_pickle="MNB_classifier5k.pickle",
-                                       bernoulli_naive_bayes_pickle="BernoulliNB_classifier5k.pickle",
-                                       logistic_regression_pickle="LogisticRegression_classifier5k.pickle",
-                                       linear_svc_pickle="LinearSVC_classifier5k.pickle", )
+        self.pickled_dictionary = dict(
+            documents_pickle="documents.pickle",
+            word_features_pickle="word_features5k.pickle",
+            naive_bayes_pickle="originalnaivebayes5k.pickle",
+            multinomial_naive_bayes_pickle="MNB_classifier5k.pickle",
+            bernoulli_naive_bayes_pickle="BernoulliNB_classifier5k.pickle",
+            logistic_regression_pickle="LogisticRegression_classifier5k.pickle",
+            linear_svc_pickle="LinearSVC_classifier5k.pickle"
+        )
         self.testing_set = None
         self.training_set = None
 
@@ -57,7 +59,6 @@ class Training(object):
         self.short_neg = open(self.negative_file_directory, "r").read()
 
     def create_training_materials(self, signal_emitter):
-
         self.open_files()
         self.sentences_positive = self.short_pos.split('\n')
         self.sentences_negative = self.short_neg.split('\n')
@@ -85,7 +86,7 @@ class Training(object):
             completion_counter += 1
             print(completion_counter, end='\r')
             # send signal from here to GUI
-            signal_emitter.emit(QtCore.SIGNAL("training_progress"), completion_counter, total)
+            signal_emitter.trainingSignal.emit(completion_counter, total)
 
         for sentence in self.sentences_negative:
             self.documents.append((sentence, "neg"))
@@ -97,7 +98,7 @@ class Training(object):
             completion_counter += 1
             print(completion_counter, end='\r')
             # send signal from here to GUI
-            signal_emitter.emit(QtCore.SIGNAL("training_progress"), completion_counter, total)
+            signal_emitter.trainingSignal.emit(completion_counter, total)
         self.save_trained_materials()
 
     def save_trained_materials(self):
@@ -148,7 +149,7 @@ class Training(object):
         msg = "Original Naive Bayes Algo accuracy \t" + str(
             round((nltk.classify.accuracy(self.classifier, self.testing_set)),4) * 100) + " % "
         print(msg)
-        signal_emitter.emit(QtCore.SIGNAL("training_progress_classifier"), 1, 5, msg)
+        signal_emitter.trainingClassifierSignal.emit(1, 5, msg)
         # classifier.show_most_informative_features(15)
         self.save_classifier = open(self.pickled_directory + "/" + self.pickled_dictionary["naive_bayes_pickle"], "wb")
         pickle.dump(self.classifier, self.save_classifier)
@@ -160,7 +161,7 @@ class Training(object):
         msg = "MNB_classifier accuracy \t" + str(
             round((nltk.classify.accuracy(self.MNB_classifier, self.training_set)), 4) * 100) + " % "
         print(msg)
-        signal_emitter.emit(QtCore.SIGNAL("training_progress_classifier"), 2, 5, msg)
+        signal_emitter.trainingClassifierSignal.emit(2, 5, msg)
         self.save_classifier = open(
             self.pickled_directory + "/" + self.pickled_dictionary["multinomial_naive_bayes_pickle"], "wb")
         pickle.dump(self.MNB_classifier, self.save_classifier)
@@ -172,7 +173,7 @@ class Training(object):
         msg = "BernoulliNB_classifier accuracy \t" + str(
             round((nltk.classify.accuracy(self.BernoulliNB_classifier, self.training_set)), 4) * 100) + " % "
         print(msg)
-        signal_emitter.emit(QtCore.SIGNAL("training_progress_classifier"), 3, 5, msg)
+        signal_emitter.trainingClassifierSignal.emit(3, 5, msg)
 
         self.save_classifier = open(
             self.pickled_directory + "/" + self.pickled_dictionary["bernoulli_naive_bayes_pickle"], "wb")
@@ -185,7 +186,7 @@ class Training(object):
         msg = "LogisticRegression_classifier accuracy \t" + str(
             round((nltk.classify.accuracy(self.LogisticRegression_classifier, self.training_set)), 4) * 100) + " % "
         print(msg)
-        signal_emitter.emit(QtCore.SIGNAL("training_progress_classifier"), 4, 5, msg)
+        signal_emitter.trainingClassifierSignal.emit(4, 5, msg)
 
         self.save_classifier = open(
             self.pickled_directory + "/" + self.pickled_dictionary["logistic_regression_pickle"], "wb")
@@ -198,7 +199,7 @@ class Training(object):
         msg = "LinearSVC_classifier accuracy \t" + str(
             round((nltk.classify.accuracy(self.LinearSVC_classifier, self.training_set)), 4) * 100) + " % "
         print(msg)
-        signal_emitter.emit(QtCore.SIGNAL("training_progress_classifier"), 5, 5, msg)
+        signal_emitter.trainingClassifierSignal.emit(5, 5, msg)
         self.save_classifier = open(self.pickled_directory + "/" + self.pickled_dictionary["linear_svc_pickle"], "wb")
         pickle.dump(self.LinearSVC_classifier, self.save_classifier)
         self.save_classifier.close()

@@ -1,9 +1,15 @@
+from PyQt5.QtCore import pyqtSignal
+
 from process.manage import ProcessManager, FeatureExtractor
 from sentiment_analysis.manage import SentimentManager
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 
 class CandidateFeatureExtractionThread(QtCore.QThread):
+    textSignal = QtCore.pyqtSignal(str)
+    progressSignal = QtCore.pyqtSignal(int, int)
+    finishSignal = QtCore.pyqtSignal()
+
     def __init__(self, interaction_data, dependant=True):
         QtCore.QThread.__init__(self)
         self.dependent = dependant
@@ -24,6 +30,10 @@ class CandidateFeatureExtractionThread(QtCore.QThread):
 
 
 class DomainRelevanceCalculationThread(QtCore.QThread):
+    textSignal = QtCore.pyqtSignal(str)
+    progressSignal = QtCore.pyqtSignal(int, int)
+    finishSignal = QtCore.pyqtSignal()
+
     def __init__(self, interaction_data, dependant=True, use_modified_iedr=True):
         QtCore.QThread.__init__(self)
         self.dependent = dependant
@@ -46,6 +56,8 @@ class DomainRelevanceCalculationThread(QtCore.QThread):
 
 
 class ActualFeatureExtractionThread(QtCore.QThread):
+    signal = QtCore.pyqtSignal(object)
+
     def __init__(self, interaction_data, idr=None, edr=None, use_percentage=False):
         QtCore.QThread.__init__(self)
         self.interaction_data = interaction_data
@@ -61,10 +73,14 @@ class ActualFeatureExtractionThread(QtCore.QThread):
             dependent_corpus=self.interaction_data.corpus_dictionary['dependent_corpus_name'],
             independent_corpus=self.interaction_data.corpus_dictionary['independent_corpus_name'])
         feature_list = self.feature_extractor.extract(use_percentage=self.use_percentage, idr=self.idr, edr=self.edr)
-        self.emit(QtCore.SIGNAL("afe"), feature_list)
+        self.signal.emit(feature_list)
 
 
 class TrainingThread(QtCore.QThread):
+    trainingSignal = QtCore.pyqtSignal(int, int)
+    trainingClassifierSignal = QtCore.pyqtSignal(int, int, str)
+    finishSignal = QtCore.pyqtSignal()
+
     def __init__(self, interaction_data):
         QtCore.QThread.__init__(self)
         self.interaction_data = interaction_data
@@ -77,11 +93,15 @@ class TrainingThread(QtCore.QThread):
             positive_file_directory=self.interaction_data.sentiment_dictionary['pos_filepath'],
             negative_file_directory=self.interaction_data.sentiment_dictionary['neg_filepath'],
             pickled_directory=self.interaction_data.sentiment_dictionary['pickled_path'],
-            emitter=self)
+            emitter=self
+        )
         self.sentiment_manager.train()
 
 
 class AnalysisThread(QtCore.QThread):
+    analysisSignal = QtCore.pyqtSignal(str, float, float)
+    finishSignal = QtCore.pyqtSignal()
+
     def __init__(self, interaction_data, test_file, feature_file):
         QtCore.QThread.__init__(self)
         self.interaction_data = interaction_data
@@ -96,7 +116,8 @@ class AnalysisThread(QtCore.QThread):
             positive_file_directory=self.interaction_data.sentiment_dictionary['pos_filepath'],
             negative_file_directory=self.interaction_data.sentiment_dictionary['neg_filepath'],
             pickled_directory=self.interaction_data.sentiment_dictionary['pickled_path'],
-            emitter=self)
+            emitter=self
+        )
         self.sentiment_manager.result(test_file_path=self.test_file, corpus_feature_file_path=self.feature_file)
 
 
