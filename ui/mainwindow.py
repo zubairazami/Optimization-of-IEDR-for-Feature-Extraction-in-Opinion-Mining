@@ -20,7 +20,7 @@ class UiMainWindow(object):
 
     def setup_ui(self):
         self.main_window.resize(940, 548)
-        self.main_window.setWindowTitle("Modified IEDR & Feature based Sentiment Analysis")
+        self.main_window.setWindowTitle("Feature Extractor")
         self.main_tab_widget.setGeometry(QtCore.QRect(0, 0, 931, 541))
         self.main_tab_widget.addTab(self.cs_tab, "Corpus Selection")
         self.main_tab_widget.addTab(self.cfe_tab, "Candidate Feature Extraction")
