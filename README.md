@@ -16,7 +16,7 @@ This project is the implementation of the feature extraction approach described 
 * [MySQL](https://dev.mysql.com/)
 ## Installation
 #### Prerequisite
-The installation has been tested in [Ubuntu 18.04.4 LTS](https://ubuntu.com/). So Ubuntu is prerequisite as operating system. The whole installation process is an bit clumsy:
+The installation has been tested in [Ubuntu 18.04.4 LTS](https://ubuntu.com/). So Ubuntu is prerequisite as operating system. The whole installation process is an bit clumsy though. Stay with me:
 #### Parser download & installation
 * From [here](https://nlp.stanford.edu/software/lex-parser.shtml#Download) download [The Standford Parser (version 3.5.2)]( https://nlp.stanford.edu/software/stanford-parser-full-2015-04-20.zip)
 * Extract the downloaded `.zip` file in `/home/your_user_name` directory
@@ -28,7 +28,14 @@ The installation has been tested in [Ubuntu 18.04.4 LTS](https://ubuntu.com/). S
 ```bash
 cd ~
 sudo apt-get install python-pip python3-pip python-dev python3-dev g++ libblas-dev liblapack-dev libatlas-base-dev gfortran libfreetype6-dev libxft-dev build-essential libqt4-dev pyqt5-dev-tools qttools5-dev-tools python3-pyqt5 default-jdk mysql-server
-echo 'export JAVA_HOME="/usr/lib/jvm/openjdk-11' >> ~/.bashrc 
+```
+* After that enter the following command:
+```bash
+gedit ~/.bashrc
+```
+* In the opened editor add the following line at the end of the file in a new line, then save & exit the editor:
+```
+echo 'export JAVA_HOME="/usr/lib/jvm/openjdk-11' >> ~/.bashrc
 ```
 
 #### Installing Virtual Environment & Activation
