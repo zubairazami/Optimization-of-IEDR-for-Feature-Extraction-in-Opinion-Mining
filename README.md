@@ -1,8 +1,6 @@
-
-
 # Optimization-of-IEDR-for-Feature-Extraction-in-Opinion-Mining
 
-This project is the implementation of the feature extraction approach described in the paper [An effective approach of intrinsic and extrinsic domain relevance technique for feature extraction in opinion mining](https://ieeexplore.ieee.org/document/7760040). A dummy dataset is included in this project for testing purpose.
+This project is the implementation of the feature extraction approach described in the paper [An effective approach of intrinsic and extrinsic domain relevance technique for feature extraction in opinion mining](https://ieeexplore.ieee.org/document/7760040). A dummy dataset is included in this project for the test purpose.
 
 ## Platform 
 #### Language
@@ -19,12 +17,12 @@ This project is the implementation of the feature extraction approach described 
 ## Installation
 #### Prerequisite
 The installation has been tested in [Ubuntu 18.04.4 LTS](https://ubuntu.com/). So Ubuntu is prerequisite as operating system. The whole installation process is an bit clumsy though. Stay with me:
-#### Parser download & installation
+#### Downloading & installing parser
 * From [here](https://nlp.stanford.edu/software/lex-parser.shtml#Download) download [The Stanford Parser (version 3.5.2)]( https://nlp.stanford.edu/software/stanford-parser-full-2015-04-20.zip)
 * Extract the downloaded `.zip` file in `/home/your_user_name` directory
 * Go to the extracted directory & again extract `stanford-parser-3.5.2-models.jar` file there 
 
-#### Required library installation
+#### Installing required libraries & packages
 
 * Open terminal (```Ctrl + Alt + T```) and use the following commands:
 ```bash
@@ -35,13 +33,15 @@ sudo apt-get install python-pip python3-pip python-dev python3-dev g++ libblas-d
 ```bash
 gedit ~/.bashrc
 ```
-* In the opened editor add the following line at the end of the file in a new line, then save & exit the editor:
-```
-echo 'export JAVA_HOME="/usr/lib/jvm/openjdk-11' >> ~/.bashrc
-```
-
-#### Installing Virtual Environment & Activation
+* In the editor add the following line at the end of the file: 
 ```bash
+export JAVA_HOME="/usr/lib/jvm/openjdk-11"
+```
+* Then save the `.bashrc` file with new changes and close the editor
+
+#### Installing Virtual Environment & Activating
+```bash
+cd ~
 sudo pip3 install virtualenv
 export WORKON_HOME=$HOME/.virtualenvs
 virtualenv -p /usr/bin/python3 TestEnv
@@ -57,7 +57,7 @@ Additionally need to download `nltk` data:
 ```bash
 python3
 ```
-Then on the python console:
+Then on the python console use the following code snippet to download nltk data:
 ```python
 >>> import nltk
 >>> nltk.download('punkt')
@@ -79,15 +79,15 @@ exit
 
 ## Usage
 
-* First copy the `Dataset` folder included with the project to a local directory (preferably in `/home/your_user_name`)
+* First copy the `Dataset` folder included with the project to a local directory ( preferably in `/home/your_user_name/` )
 
 * Go to the saved directory of the download source:
 ```bash
-# Ex.
+# Example
 cd ~/Optimization-of-IEDR-for-Feature-Extraction-in-Opinion-Mining/
 ```
 
-* Activate the virtual environment if not activated
+* Activate the virtual environment if not activated already:
 ```bash
 source ~/TestEnv/bin/activate
 ```
@@ -97,7 +97,7 @@ source ~/TestEnv/bin/activate
 python3 script.py
 ```
 
-* Set corpora as followings from dataset folder:
+* Set corpus as followings from `Dataset` folder:
 <img src="https://user-images.githubusercontent.com/14239584/76014727-4cda2100-5f44-11ea-9831-8f4fa3009f04.png" align="middle" height="295" width="470" >
 
 * Extract candidate feature for both domain dependent & domain independent corpus. This may take a bit time:
