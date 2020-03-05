@@ -1,3 +1,5 @@
+
+
 # Optimization-of-IEDR-for-Feature-Extraction-in-Opinion-Mining
 
 This project is the implementation of the feature extraction approach described in the paper [An effective approach of intrinsic and extrinsic domain relevance technique for feature extraction in opinion mining](https://ieeexplore.ieee.org/document/7760040). A dummy dataset is included in this project for testing purpose.
@@ -18,7 +20,7 @@ This project is the implementation of the feature extraction approach described 
 #### Prerequisite
 The installation has been tested in [Ubuntu 18.04.4 LTS](https://ubuntu.com/). So Ubuntu is prerequisite as operating system. The whole installation process is an bit clumsy though. Stay with me:
 #### Parser download & installation
-* From [here](https://nlp.stanford.edu/software/lex-parser.shtml#Download) download [The Standford Parser (version 3.5.2)]( https://nlp.stanford.edu/software/stanford-parser-full-2015-04-20.zip)
+* From [here](https://nlp.stanford.edu/software/lex-parser.shtml#Download) download [The Stanford Parser (version 3.5.2)]( https://nlp.stanford.edu/software/stanford-parser-full-2015-04-20.zip)
 * Extract the downloaded `.zip` file in `/home/your_user_name` directory
 * Go to the extracted directory & again extract `stanford-parser-3.5.2-models.jar` file there 
 
@@ -94,3 +96,15 @@ source ~/TestEnv/bin/activate
 ```bash
 python3 script.py
 ```
+
+* Set corpora as followings from dataset folder:
+<img src="https://user-images.githubusercontent.com/14239584/76014727-4cda2100-5f44-11ea-9831-8f4fa3009f04.png" align="middle" height="295" width="470" >
+
+* Extract candidate feature for both domain dependent & domain independent corpus. This may take a bit time:
+<img src="https://user-images.githubusercontent.com/14239584/76014729-4d72b780-5f44-11ea-9fae-2aeddf263c05.png" align="middle" height="295" width="470" >
+
+* Calculate domain relevance for both domain dependent & domain independent corpus. At the beginning of the process (calculating domain relevance of dependent corpus) you would like to clear the previous data from database:
+<img src="https://user-images.githubusercontent.com/14239584/76014720-4b105d80-5f44-11ea-8f6e-1e3bb264bd57.jpg" align="middle" height="295" width="950" >
+
+* Now time to extract actual features. Set threshold value and extract:
+<img src="https://user-images.githubusercontent.com/14239584/76014737-4ea3e480-5f44-11ea-96d4-c76f58aed460.jpg" align="middle" height="295" width="950" >
