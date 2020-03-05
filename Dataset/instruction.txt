@@ -1,0 +1,5 @@
+Do not delete the followings
+- the folders named `raw` & it's content in any corpus (cars / hotels)
+- the folder named `eval`
+
+Contents inside folders named `eval` can be deleted, but in that case candidate features need to be extracted again in future.
